@@ -30,4 +30,5 @@
 *.exe
 *.out
 *.app
-game`
+game
+game.dSYM
