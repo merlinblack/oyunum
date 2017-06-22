@@ -13,4 +13,6 @@ int main( int argc, char** argv )
     game.setScene();
 
     game.run();
+
+    return 0;
 }
