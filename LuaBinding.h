@@ -320,8 +320,8 @@ struct PODBinding {
         return 0;
     }
 
-    // Grab object shared pointer from the Lua stack
-    static const T& fromStack( lua_State *L, int index )
+    // Grab object pointer from the Lua stack
+    static T& fromStack( lua_State *L, int index )
     {
         void* ud = luaL_checkudata( L, index, B::class_name );
 
