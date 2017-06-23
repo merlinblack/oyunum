@@ -20,7 +20,7 @@ class Text : public Renderable
         : mFont(font), mColor(color),  mX(x), mY(y)
     {}
 
-    Text( std::string&& text, ALLEGRO_FONT* font, ALLEGRO_COLOR color, int x, int y )
+    Text( const std::string&& text, ALLEGRO_FONT* font, ALLEGRO_COLOR color, int x, int y )
         : mText(std::move(text)), mFont(font), mColor(color),  mX(x), mY(y)
     {}
 

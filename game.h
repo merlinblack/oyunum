@@ -14,13 +14,14 @@
 #include "rectangle.h"
 
 #include "lb_renderlist.h"
+#include "lb_text.h"
 
 #define MAX_BUTTONS 4
 
 class Game
 {
     private:
-    
+
     ALLEGRO_DISPLAY* display;
     ALLEGRO_TIMER* frameTimer;
     ALLEGRO_TIMER* scriptTimer;
@@ -28,7 +29,7 @@ class Game
     ALLEGRO_FONT* font;
     ALLEGRO_BITMAP* icon;
     
-    RenderList renderlist;
+    RenderListPtr renderlist;
 
     TextPtr fpsText;
     TextPtr spsText;
@@ -46,6 +47,7 @@ class Game
     lua_State* L;
 
     public:
+
     Game() : display(nullptr), frameTimer(nullptr), eventQueue(nullptr), redraw(false)
     {
         for(int i=1; i < MAX_BUTTONS; i++ )
@@ -93,12 +95,23 @@ class Game
     {
         L = luaL_newstate();
         luaL_openlibs( L );
+
+        RenderableBinding::register_class( L );
+        RenderListBinding::register_class( L );
+        TextBinding::register_class( L );
+
+        lua_pushlightuserdata( L, font );
+        lua_setglobal( L, "fixed_font" );
+
+        RenderListBinding::push( L, renderlist );
+        lua_setglobal( L, "renderlist" );
     }
 
     bool boot()
     {
+        renderlist = std::make_shared<RenderList>();
+
         initialiseAllegro();
-        initialiseLua();
         
         if( ! createDisplay() )
             return false;
@@ -112,6 +125,8 @@ class Game
 
         width = al_get_display_width( display );
         height = al_get_display_height( display );
+
+        initialiseLua();
 
         redraw = true;
 
@@ -128,16 +143,16 @@ class Game
         rl->add( make_shared<Rectangle>( 4, 34, 100, 60, 8, 8, al_map_rgba(58,68,15,200)));
         rl->add( make_shared<Rectangle>( 4, 64, 120, 90, 8, 8, al_map_rgba(58,28,75,200)));
 
-        renderlist.add( std::move(rl) );
+        renderlist->add( std::move(rl) );
         
         fpsText = make_shared<Text>( font, al_map_rgb( 255, 255, 255 ), 54, 8 );
-        renderlist.add( fpsText );
+        renderlist->add( fpsText );
 
         spsText = make_shared<Text>( font, al_map_rgb( 255, 255, 255 ), 54, 38 );
-        renderlist.add( spsText );
+        renderlist->add( spsText );
 
         mouseText = make_shared<Text>( font, al_map_rgb( 255, 255, 255 ), 61, 68 );
-        renderlist.add( mouseText );
+        renderlist->add( mouseText );
         updateMouseText();
 
     }
@@ -157,7 +172,10 @@ class Game
 
     void run()
     {
-        luaL_dofile( L, "script.lua" );
+        if( luaL_dofile( L, "script.lua" ) )
+        {
+            std::cerr << lua_tostring( L, -1 ) << std::endl;
+        }
 
         LuaRef updateScripts = LuaRef::getGlobal( L, "update" );
 
@@ -182,12 +200,12 @@ class Game
 
                 if( event.keyboard.keycode == ALLEGRO_KEY_Z )
                 {
-                    renderlist.remove( mouseText );
+                    renderlist->remove( mouseText );
                 }
 
                 if( event.keyboard.keycode == ALLEGRO_KEY_X )
                 {
-                    renderlist.add( mouseText );
+                    renderlist->add( mouseText );
                 }
             }
 
@@ -252,7 +270,7 @@ class Game
 
                 al_clear_to_color( al_map_rgb( 83, 24, 24 ) );
 
-                renderlist.render();
+                renderlist->render();
 
                 al_flip_display();
 
