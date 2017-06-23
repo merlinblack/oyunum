@@ -3,6 +3,7 @@
 
 #include "LuaBinding.h"
 #include "lb_renderlist.h"
+#include "lb_font.h"
 #include "text.h"
 
 struct TextBinding : public Binding<TextBinding,Text>
@@ -30,7 +31,7 @@ struct TextBinding : public Binding<TextBinding,Text>
     static int create( lua_State* L )
     {
         std::string text = luaL_checkstring( L, 1 );
-        ALLEGRO_FONT* font = (ALLEGRO_FONT*) lua_touserdata( L, 2 );
+        ALLEGRO_FONT* font = (ALLEGRO_FONT*) FontBinding::fromStack( L, 2 );
         ALLEGRO_COLOR color = al_map_rgb( 255, 255, 255 );
         int x = luaL_checkinteger( L, 3 );
         int y = luaL_checkinteger( L, 4 );
@@ -71,7 +72,6 @@ struct TextBinding : public Binding<TextBinding,Text>
 
         return 1;
     }
-
 
 };
 
