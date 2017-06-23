@@ -16,6 +16,7 @@
 #include "lb_renderlist.h"
 #include "lb_text.h"
 #include "lb_font.h"
+#include "lb_color.h"
 
 #define MAX_BUTTONS 4
 
@@ -98,6 +99,7 @@ class Game
         luaL_openlibs( L );
 
         FontBinding::register_class( L );
+        ColorBinding::register_class( L );
         RenderableBinding::register_class( L );
         RenderListBinding::register_class( L );
         TextBinding::register_class( L );
