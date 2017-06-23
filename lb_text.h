@@ -4,6 +4,7 @@
 #include "LuaBinding.h"
 #include "lb_renderlist.h"
 #include "lb_font.h"
+#include "lb_color.h"
 #include "text.h"
 
 struct TextBinding : public Binding<TextBinding,Text>
@@ -32,9 +33,9 @@ struct TextBinding : public Binding<TextBinding,Text>
     {
         std::string text = luaL_checkstring( L, 1 );
         ALLEGRO_FONT* font = (ALLEGRO_FONT*) FontBinding::fromStack( L, 2 );
-        ALLEGRO_COLOR color = al_map_rgb( 255, 255, 255 );
-        int x = luaL_checkinteger( L, 3 );
-        int y = luaL_checkinteger( L, 4 );
+        ALLEGRO_COLOR color = ColorBinding::fromStack( L, 3 );
+        int x = luaL_checkinteger( L, 4 );
+        int y = luaL_checkinteger( L, 5 );
 
         TextPtr t = std::make_shared<Text>( std::move(text), font, color, x, y);
 

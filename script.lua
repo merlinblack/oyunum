@@ -9,8 +9,14 @@ function update( t )
     end
 end
 
-hello = Text( "Hello", fixed_font, 100, 100 )
-world = Text( "World", fixed_font, 120, 120 )
+print( AllegroColor )
+white = AllegroColor( 255, 255, 255, 255 )
+grey  = AllegroColor( 128, 128, 128, 255 )
+print( white )
+
+hello = Text( "Hello", fixed_font, white, 100, 100 )
+world = Text( "World", fixed_font, grey,  120, 120 )
+
 print( hello )
 print( fixed_font )
 
