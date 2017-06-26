@@ -24,6 +24,7 @@ struct TextBinding : public Binding<TextBinding,Text>
     {
         static bind_properties properties[] = {
             { "text", getText, setText },
+            { "color", getColor, setColor },
             { nullptr, nullptr, nullptr }
         };
         return properties;
@@ -62,6 +63,26 @@ struct TextBinding : public Binding<TextBinding,Text>
 
         return 0;
     }
+
+    static int getColor( lua_State* L )
+    {
+        TextPtr t = fromStack( L, 1 );
+
+        ColorBinding::push( L, t->getColor() );
+
+        return 1;
+    }
+
+    static int setColor( lua_State* L )
+    {
+        TextPtr t = fromStack( L, 1 );
+        ALLEGRO_COLOR c = ColorBinding::fromStack( L, 3 );
+
+        t->setColor( c );
+
+        return 0;
+    }
+
 
     int static upcast( lua_State* L )
     {

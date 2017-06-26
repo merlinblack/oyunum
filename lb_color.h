@@ -19,7 +19,10 @@ struct ColorBinding : public PODBinding<ColorBinding,ALLEGRO_COLOR>
     static bind_properties* properties()
     {
         static bind_properties properties[] = {
-            { "rgba", get_rgba, set_rgba },
+            { "r", get_rgba, set_rgba },
+            { "g", get_rgba, set_rgba },
+            { "b", get_rgba, set_rgba },
+            { "a", get_rgba, set_rgba },
             { nullptr, nullptr, nullptr }
         };
         return properties;
@@ -41,6 +44,8 @@ struct ColorBinding : public PODBinding<ColorBinding,ALLEGRO_COLOR>
         return 1;
     }
 
+    static const char* prop_keys[];
+
     static int get_rgba( lua_State* L )
     {
         unsigned char r, g, b, a;
@@ -49,12 +54,29 @@ struct ColorBinding : public PODBinding<ColorBinding,ALLEGRO_COLOR>
 
         al_unmap_rgba( c, &r, &g, &b, &a );
 
-        lua_pushinteger( L, r );
-        lua_pushinteger( L, g );
-        lua_pushinteger( L, b );
-        lua_pushinteger( L, a );
+        int which = luaL_checkoption( L, 2, NULL, ColorBinding::prop_keys );
 
-        return 4;
+        switch( which )
+        {
+            case 0:
+                lua_pushinteger( L, r );
+                break;
+
+            case 1:
+                lua_pushinteger( L, g );
+                break;
+
+            case 2:
+                lua_pushinteger( L, b );
+                break;
+
+            case 3:
+                lua_pushinteger( L, a );
+                break;
+
+        }
+
+        return 1;
     }
 
     static int set_rgba( lua_State* L )
@@ -63,10 +85,28 @@ struct ColorBinding : public PODBinding<ColorBinding,ALLEGRO_COLOR>
 
         ALLEGRO_COLOR& c = fromStack( L, 1 );
 
-        r = luaL_checkinteger( L, 2 );
-        g = luaL_checkinteger( L, 3 );
-        b = luaL_checkinteger( L, 4 );
-        a = luaL_checkinteger( L, 5 );
+        int which = luaL_checkoption( L, 2, NULL, ColorBinding::prop_keys );
+
+        al_unmap_rgba( c, &r, &g, &b, &a );
+
+        switch( which )
+        {
+            case 0:
+                r = luaL_checkinteger( L, 3 );
+                break;
+
+            case 1:
+                g = luaL_checkinteger( L, 3 );
+                break;
+
+            case 2:
+                b = luaL_checkinteger( L, 3 );
+                break;
+
+            case 3:
+                a = luaL_checkinteger( L, 3 );
+                break;
+        }
 
         c = al_map_rgba( r, g, b, a );
 
@@ -75,4 +115,6 @@ struct ColorBinding : public PODBinding<ColorBinding,ALLEGRO_COLOR>
 
 };
 
-#endif //LB_COLOR_HluaL_error( L, "Not implemented yet" );
+const char* ColorBinding::prop_keys[] = { "r", "g", "b", "a", nullptr };
+
+#endif //LB_COLOR_H

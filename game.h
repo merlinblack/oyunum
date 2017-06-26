@@ -1,6 +1,8 @@
 #ifndef GAME_H
 #define GAME_H
 
+#include <iostream>
+
 #include <allegro5/allegro.h>
 #include <allegro5/allegro_image.h>
 #include <allegro5/allegro_font.h>
@@ -243,7 +245,13 @@ class Game
                     spsText << "SPS: " << sps;
                 }
 
-                updateScripts( t );
+                try {
+                    updateScripts( t );
+                } 
+                catch( LuaException &e )
+                {
+                    std::cerr << e.what() << std::endl;
+                }
             }
 
             if( event.type == ALLEGRO_EVENT_MOUSE_BUTTON_DOWN ) {
