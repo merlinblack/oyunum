@@ -33,7 +33,17 @@ class Text : public Renderable
     {
         return mText;
     }
-    
+
+    void setColor( ALLEGRO_COLOR color )
+    {
+        mColor = color;
+    }
+
+    ALLEGRO_COLOR getColor()
+    {
+        return mColor;
+    }
+
     void clearText()
     {
         mText.clear();
