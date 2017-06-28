@@ -1,3 +1,6 @@
 [submodule "manualbind"]
 	path = manualbind
 	url = https://github.com/merlinblack/manualbind.git
+[submodule "zzlib"]
+	path = zzlib
+	url = https://github.com/zerkman/zzlib.git
