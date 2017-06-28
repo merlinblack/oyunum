@@ -1,0 +1,3 @@
+[submodule "manualbind"]
+	path = manualbind
+	url = https://github.com/merlinblack/manualbind.git
