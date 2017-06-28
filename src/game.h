@@ -124,8 +124,8 @@ class Game
 
         registerEventSources();
 
-        font = al_load_font( "fixed_font.tga", 0, 0 );
-        icon = al_load_bitmap( "icon.tga" );
+        font = al_load_font( "data/fixed_font.tga", 0, 0 );
+        icon = al_load_bitmap( "data/icon.tga" );
 
         al_set_display_icon( display, icon );
 
