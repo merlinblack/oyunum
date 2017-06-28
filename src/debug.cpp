@@ -1,4 +1,4 @@
-#include "common.h"
+#include "debug.h"
 #include <iostream>
 
 using std::cout;
