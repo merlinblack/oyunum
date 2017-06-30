@@ -6,7 +6,7 @@ int main( int argc, char** argv )
     Game game;
 
     if( !game.boot() ) {
-        std::cerr << "Could not init display." << std::endl;
+        std::cerr << "Could not init display or find resource." << std::endl;
         return 1;
     }
 
