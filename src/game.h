@@ -52,7 +52,7 @@ class Game
 
     public:
 
-    Game() : display(nullptr), frameTimer(nullptr), eventQueue(nullptr), redraw(false)
+    Game() : display(nullptr), frameTimer(nullptr), eventQueue(nullptr), redraw(false),L(nullptr)
     {
         for(int i=1; i < MAX_BUTTONS; i++ )
             mouse.buttons[i] = false;
@@ -127,6 +127,9 @@ class Game
         font = al_load_font( "data/fixed_font.tga", 0, 0 );
         icon = al_load_bitmap( "data/icon.tga" );
 
+        if( !font || !icon )
+            return false;
+
         al_set_display_icon( display, icon );
 
         width = al_get_display_width( display );
@@ -181,6 +184,7 @@ class Game
         if( luaL_dofile( L, "script.lua" ) )
         {
             std::cerr << lua_tostring( L, -1 ) << std::endl;
+            return;
         }
 
         LuaRef updateScripts = LuaRef::getGlobal( L, "update" );
@@ -310,7 +314,9 @@ class Game
 
     ~Game()
     {
-        lua_close( L );
+        if( L ) {
+            lua_close( L );
+        }
         deregisterEventSources();
         destroyDisplay();
     }

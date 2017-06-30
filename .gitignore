@@ -30,6 +30,6 @@
 *.exe
 *.out
 *.app
-gitversioning.h
-game
-game.dSYM
+build
+release
+debug
