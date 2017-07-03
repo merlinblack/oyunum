@@ -10,9 +10,11 @@ find_package( allegro 5.0 COMPONENTS main image font primitives )
 
 file(GLOB SRCS src/*.cpp)
 file(GLOB HDRS src/*.h manualbind/src/*.h)
-include_directories(manualbind/src)
-include_directories(${lua_INCLUDE_DIRS})
-include_directories(${allegro_INCLUDE_DIRS})
+include_directories(
+    manualbind/src
+    ${lua_INCLUDE_DIRS}
+    ${allegro_INCLUDE_DIRS}
+    )
 
 # we don't want to copy if we're building in the source dir
 if (NOT CMAKE_CURRENT_SOURCE_DIR STREQUAL CMAKE_CURRENT_BINARY_DIR)
