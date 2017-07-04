@@ -14,6 +14,7 @@
 #include "renderlist.h"
 #include "text.h"
 #include "rectangle.h"
+#include "bitmap.h"
 
 #include "lb_renderlist.h"
 #include "lb_text.h"

@@ -103,7 +103,6 @@ void Game::setScene()
     mouseText = make_shared<Text>( font, al_map_rgb( 255, 255, 255 ), 61, 68 );
     renderlist->add( mouseText );
     updateMouseText();
-
 }
 
 void Game::updateMouseText()
