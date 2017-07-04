@@ -115,6 +115,4 @@ struct ColorBinding : public PODBinding<ColorBinding,ALLEGRO_COLOR>
 
 };
 
-const char* ColorBinding::prop_keys[] = { "r", "g", "b", "a", nullptr };
-
 #endif //LB_COLOR_H
