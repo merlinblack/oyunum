@@ -15,6 +15,7 @@
 #include "text.h"
 #include "rectangle.h"
 #include "bitmap.h"
+#include "tileset.h"
 
 #include "lb_renderlist.h"
 #include "lb_text.h"
@@ -39,6 +40,8 @@ class Game
     TextPtr fpsText;
     TextPtr spsText;
     TextPtr mouseText;
+
+    TileSet tiles;
 
     bool redraw;
     struct {

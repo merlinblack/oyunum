@@ -15,9 +15,9 @@ class Rectangle : public Renderable
     public:
 
     Rectangle( int px1, int py1, int px2, int py2, int prx, int pry, ALLEGRO_COLOR pcolor )
-        : x1(px1), y1(py1), x2(px2), y2(py2)
+        : color(pcolor)
+        , x1(px1), y1(py1), x2(px2), y2(py2)
         , rx(prx), ry(pry)
-        , color(pcolor)
     {}
 
     void render()
