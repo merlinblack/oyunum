@@ -75,6 +75,9 @@ bool Game::boot()
     width = al_get_display_width( display );
     height = al_get_display_height( display );
 
+    if( ! tiles.loadSourceBitmap( "data/dawn_of_the_gods.png" ) )
+        return false;
+
     initialiseLua();
 
     redraw = true;
@@ -224,6 +227,14 @@ void Game::run()
             redraw = false;
 
             al_clear_to_color( al_map_rgb( 83, 24, 24 ) );
+
+            int start = 50;
+            for( int tileId = start; tileId < start+20; tileId++ )
+            {
+                ALLEGRO_BITMAP* t = tiles.getTile( tileId );
+
+                al_draw_bitmap( t, (tileId-start) * 32, 200, 0 );
+            }
 
             renderlist->render();
 
