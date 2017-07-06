@@ -14,8 +14,6 @@ ALLEGRO_BITMAP* TileSet::createTileBitmap( int tileId )
     if( source == nullptr )
         return nullptr;
 
-    tileId -= firstTileId;
-
     int sourceWidth  = al_get_bitmap_width( source );
 
     int columns = sourceWidth / tileWidth;
@@ -51,6 +49,8 @@ bool TileSet::loadSourceBitmap( std::string filename )
 
 ALLEGRO_BITMAP* TileSet::getTile( int tileId )
 {
+    tileId -= firstTileId;
+
     TileMap::const_iterator entry = map.find( tileId );
 
     if( entry != map.end() )

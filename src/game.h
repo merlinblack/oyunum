@@ -16,6 +16,7 @@
 #include "rectangle.h"
 #include "bitmap.h"
 #include "tileset.h"
+#include "tilegrid.h"
 
 #include "lb_renderlist.h"
 #include "lb_text.h"
@@ -41,7 +42,8 @@ class Game
     TextPtr spsText;
     TextPtr mouseText;
 
-    TileSet tiles;
+    TileSetPtr tiles;
+    TileGridPtr grid;
 
     bool redraw;
     struct {

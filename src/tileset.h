@@ -2,6 +2,7 @@
 #define TILESET_H
 
 #include <allegro5/allegro.h>
+#include <memory>
 #include <map>
 
 using TileMap = std::map<int,ALLEGRO_BITMAP*>;
@@ -22,7 +23,7 @@ class TileSet
     void destroy();
 
     public:
-    TileSet( int first = 0, int tWidth = 32, int tHeight = 32 ) 
+    TileSet( int first = 1, int tWidth = 32, int tHeight = 32 ) 
         : source(nullptr)
         , firstTileId(first)
         , tileWidth(tWidth)
@@ -39,5 +40,7 @@ class TileSet
 
     int getFirstTileID() { return firstTileId; }
 };
+
+using TileSetPtr = std::shared_ptr<TileSet>;
 
 #endif // TILESET_H
