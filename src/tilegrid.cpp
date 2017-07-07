@@ -9,20 +9,20 @@ void TileGrid::render()
     al_hold_bitmap_drawing( true );
 
     for( auto const tile : data ) {
-        if( tile != 0 ) {
-            if( column >= width ) {
-                column = 0;
-                y += 32;
-                x = dx;
-            }
-            al_draw_bitmap(
-                    tileSet->getTile( tile ),
-                    x, y,
-                    0
-                    );
-            column++;
-            x += 32;
+        if( column >= width ) {
+            column = 0;
+            y += 32;
+            x = dx;
         }
+        if( tile != 0 ) {
+            al_draw_bitmap(
+                tileSet->getTile( tile ),
+                x, y,
+                0
+            );
+        }
+        column++;
+        x += 32;
     }
 
     al_hold_bitmap_drawing( false );
