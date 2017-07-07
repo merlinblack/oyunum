@@ -42,9 +42,6 @@ class Game
     TextPtr spsText;
     TextPtr mouseText;
 
-    TileSetPtr tiles;
-    TileGridPtr grid;
-
     bool redraw;
     struct {
         bool buttons[MAX_BUTTONS+1];
