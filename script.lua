@@ -51,6 +51,20 @@ slide = coroutine.create( function()
     end
 end )
 
+ts = TileSet()
+ts:loadSourceBitmap( 'data/dawn_of_the_gods.png' );
+print(ts)
+
+package.path = './data/?.lua;' .. package.path
+map = require( 'map' )
+layer1 = map.layers[1]
+
+tg = TileGrid( ts, layer1.width, layer1.height )
+tg:setData( layer1.data )
+tg:setXY( 0, 0 )
+
+renderlist:insert( tg )
+
 print( AllegroColor )
 white = AllegroColor( 255, 255, 255, 255 )
 grey  = AllegroColor( 128, 128, 128, 255 )
@@ -65,10 +79,6 @@ print( fixed_font )
 renderlist:add( hello )
 renderlist:add( world )
 
-ts = TileSet()
-ts:loadSourceBitmap( 'data/dawn_of_the_gods.png' );
-print(ts)
-
 tile1 = ts:getTile( 44 )
 tile2 = ts:getTile( 47 )
 
@@ -79,5 +89,6 @@ renderlist:add( tile1 )
 renderlist:add( tile2 )
 
 print( tile1 )
+
 
 print( 'Completed' );
