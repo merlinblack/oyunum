@@ -19,7 +19,7 @@ class Bitmap : public Renderable
 
     Bitmap() : bitmap(nullptr), x(0), y(0)
     {}
-    Bitmap( ALLEGRO_BITMAP* _bitmap, int _x, int _y  ) : bitmap(_bitmap), x(_x), y(_y)
+    Bitmap( ALLEGRO_BITMAP* _bitmap, int _x = 0 , int _y = 0 ) : bitmap(_bitmap), x(_x), y(_y)
     {}
 
     void render()
