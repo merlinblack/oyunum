@@ -3,6 +3,7 @@
 
 #include <allegro5/allegro.h>
 #include <memory>
+#include <string>
 #include <map>
 
 using TileMap = std::map<int,ALLEGRO_BITMAP*>;

@@ -21,7 +21,7 @@ file(GLOB Lua_Interpreter lua-5.3.4/src/lua.c)
 file(GLOB Lua_Compiler    lua-5.3.4/src/luac.c)
 list(REMOVE_ITEM Lua_LIB_SRCS ${Lua_Interpreter} ${Lua_Compiler})
 
-set (Lua_INCLUDE_DIRS lua-5.3.4/src PARENT_SCOPE )
+set (Lua_INCLUDE_DIRS lua/lua-5.3.4/src PARENT_SCOPE )
 
 # create the library
 add_library (lua ${Lua_LIB_SRCS})
