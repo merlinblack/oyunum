@@ -11,6 +11,10 @@ function update( t )
     if not ret and error ~= 'cannot resume dead coroutine' then 
         print( error )
     end
+    ret, error = coroutine.resume( slide )
+    if not ret and error ~= 'cannot resume dead coroutine' then 
+        print( error )
+    end
 end
 
 pulse = coroutine.create( function()
@@ -19,8 +23,6 @@ pulse = coroutine.create( function()
             c = world.color
             c.r = i
             world.color = c
-            tile1.x = 16 + i//10
-            tile2.x = 48 + i//10
             coroutine.yield()
         end
         for i=255,0,-5 do
@@ -29,6 +31,21 @@ pulse = coroutine.create( function()
             world.color = c
             tile1.x = 16 + i//10
             tile2.x = 48 + i//10
+            coroutine.yield()
+        end
+    end
+end )
+
+slide = coroutine.create( function()
+    while true do
+        for i=16, 400, 1 do
+            tile1.x = i
+            tile2.x = 32 + i
+            coroutine.yield()
+        end
+        for i=400, 16, -1 do
+            tile1.x = i
+            tile2.x = 32 + i
             coroutine.yield()
         end
     end
@@ -48,11 +65,12 @@ print( fixed_font )
 renderlist:add( hello )
 renderlist:add( world )
 
-tiles = Bitmap()
-tiles:loadFile( 'data/dawn_of_the_gods.png' );
+ts = TileSet()
+ts:loadSourceBitmap( 'data/dawn_of_the_gods.png' );
+print(ts)
 
-tile1 = tiles:getSubBitmap( 32, 32, 32, 32 );
-tile2 = tiles:getSubBitmap( 64, 32, 32, 32 );
+tile1 = ts:getTile( 44 )
+tile2 = ts:getTile( 47 )
 
 tile1.x, tile1.y = 16, 170
 tile2.x, tile2.y = 48, 170
