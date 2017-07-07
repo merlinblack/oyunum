@@ -12,7 +12,7 @@ file(GLOB SRCS src/*.cpp manualbind/src/*.cpp)
 file(GLOB HDRS src/*.h manualbind/src/*.h)
 include_directories(
     manualbind/src
-    ${lua_INCLUDE_DIRS}
+    ${Lua_INCLUDE_DIRS}
     ${allegro_INCLUDE_DIRS}
     )
 
@@ -53,6 +53,9 @@ target_link_libraries(oyunum
     ${Lua_LIBRARIES}
     ${allegro_LIBRARIES}
     )
+
+set_property(TARGET oyunum PROPERTY CXX_STANDARD 11)
+set_property(TARGET oyunum PROPERTY CXX_STANDARD_REQUIRED ON)
 
 add_custom_target(data-target ALL DEPENDS "${CMAKE_CURRENT_BINARY_DIR}/data" "${CMAKE_CURRENT_BINARY_DIR}/script.lua")
 
