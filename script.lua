@@ -7,11 +7,13 @@ function update( t )
         prev = t
         hello.text, world.text = world.text, hello.text
     end
-    ret, error = coroutine.resume( pulse )
-    if not ret and error ~= 'cannot resume dead coroutine' then 
-        print( error )
-    end
-    ret, error = coroutine.resume( slide )
+    tick( pulse )
+    tick( slide )
+    tick( slide2 )
+end
+
+function tick( co )
+    ret, error = coroutine.resume( co )
     if not ret and error ~= 'cannot resume dead coroutine' then 
         print( error )
     end
@@ -46,6 +48,19 @@ slide = coroutine.create( function()
         for i=400, 16, -1 do
             tile1.x = i
             tile2.x = 32 + i
+            coroutine.yield()
+        end
+    end
+end )
+
+slide2 = coroutine.create( function()
+    while true do
+        for i=0, -160, -1/10 do
+            tg:setXY( math.floor(i), 0 )
+            coroutine.yield()
+        end
+        for i=-160, 0, 1/10 do
+            tg:setXY( math.floor(i), 0 )
             coroutine.yield()
         end
     end
