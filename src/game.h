@@ -25,6 +25,10 @@
 
 #define MAX_BUTTONS 4
 
+// 16:9
+#define SCREEN_W    640 
+#define SCREEN_H    360
+
 class Game
 {
     private:
@@ -35,6 +39,12 @@ class Game
     ALLEGRO_EVENT_QUEUE* eventQueue;
     ALLEGRO_FONT* font;
     ALLEGRO_BITMAP* icon;
+
+    ALLEGRO_BITMAP* buffer;
+    int scaleW;
+    int scaleH;
+    int scaleX;
+    int scaleY;
     
     RenderListPtr renderlist;
 
@@ -69,6 +79,7 @@ class Game
     bool boot();
     void setScene();
     void updateMouseText();
+    void resize();
     void run();
     void deregisterEventSources();
     void destroyDisplay();

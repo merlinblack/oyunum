@@ -1,5 +1,9 @@
 #include "game.h"
 
+#include <iostream>
+using std::cout;
+using std::endl;
+
 // in binding.cpp
 void register_all_classes( lua_State* L );
 
@@ -15,12 +19,31 @@ void Game::initialiseAllegro()
 bool Game::createDisplay()
 {
     al_set_new_display_flags( ALLEGRO_RESIZABLE );
-    display = al_create_display( 640, 400 );
+    display = al_create_display( SCREEN_W, SCREEN_H );
     if( display == nullptr )
         return false;
     al_set_window_title( display, "My Game" );
 
+    buffer = al_create_bitmap( SCREEN_W, SCREEN_H );
+
+    resize();
+
     return true;
+}
+
+void Game::resize()
+{
+    width = al_get_display_width( display );
+    height = al_get_display_height( display );
+
+    float sx = width / (float)SCREEN_W;
+    float sy = height / (float)SCREEN_H;
+    float scale = std::min( sx, sy );
+
+    scaleW = SCREEN_W * scale;
+    scaleH = SCREEN_H * scale;
+    scaleX = (width - scaleW) / 2;
+    scaleY = (height - scaleH) / 2;
 }
 
 void Game::registerEventSources()
@@ -71,9 +94,6 @@ bool Game::boot()
         return false;
 
     al_set_display_icon( display, icon );
-
-    width = al_get_display_width( display );
-    height = al_get_display_height( display );
 
     initialiseLua();
 
@@ -216,8 +236,7 @@ void Game::run()
         {
             al_acknowledge_resize( display );
 
-            width = al_get_display_width( display );
-            height = al_get_display_height( display );
+            resize();
 
             redraw = true;
         }
@@ -226,9 +245,17 @@ void Game::run()
         {
             redraw = false;
 
+            al_set_target_bitmap( buffer );
+
             al_clear_to_color( al_map_rgb( 83, 24, 24 ) );
 
             renderlist->render();
+
+            al_set_target_backbuffer( display );
+
+            al_clear_to_color( al_map_rgb( 0, 0, 0 ) );
+            
+            al_draw_scaled_bitmap( buffer, 0, 0, SCREEN_W, SCREEN_H, scaleX, scaleY, scaleW, scaleH, 0 );
 
             al_flip_display();
 
