@@ -7,13 +7,13 @@ function update( t )
         prev = t
         hello.text, world.text = world.text, hello.text
     end
-    tick( pulse )
-    tick( slide )
-    tick( slide2 )
+    tick( pulse, t )
+    tick( slide, t )
+    tick( run_animate, t )
 end
 
-function tick( co )
-    ret, error = coroutine.resume( co )
+function tick( co, t )
+    ret, error = coroutine.resume( co, t )
     if not ret and error ~= 'cannot resume dead coroutine' then 
         print( error )
     end
@@ -53,15 +53,28 @@ slide = coroutine.create( function()
     end
 end )
 
-slide2 = coroutine.create( function()
+idle_animate = coroutine.create( function( time )
+    local prev = time
     while true do
-        for i=0, -160, -1/10 do
-            tg:setXY( math.floor(i), 0 )
-            coroutine.yield()
+        for index=1,10 do
+            while time - prev < .20 do
+                time = coroutine.yield()
+            end
+            prev = time
+            indy:setBitmap( Idle[index] )
         end
-        for i=-160, 0, 1/10 do
-            tg:setXY( math.floor(i), 0 )
-            coroutine.yield()
+    end
+end )
+
+run_animate = coroutine.create( function( time )
+    local prev = time
+    while true do
+        for index=1,10 do
+            while time - prev < .08 do
+                time = coroutine.yield()
+            end
+            prev = time
+            indy:setBitmap( Run[index] )
         end
     end
 end )
@@ -105,5 +118,36 @@ renderlist:add( tile2 )
 
 print( tile1 )
 
+Idle = {}
+Idle[1] = Bitmap( 'data/sprites/templerun/Idle_0.png' );
+Idle[2] = Bitmap( 'data/sprites/templerun/Idle_1.png' );
+Idle[3] = Bitmap( 'data/sprites/templerun/Idle_2.png' );
+Idle[4] = Bitmap( 'data/sprites/templerun/Idle_3.png' );
+Idle[5] = Bitmap( 'data/sprites/templerun/Idle_4.png' );
+Idle[6] = Bitmap( 'data/sprites/templerun/Idle_5.png' );
+Idle[7] = Bitmap( 'data/sprites/templerun/Idle_6.png' );
+Idle[8] = Bitmap( 'data/sprites/templerun/Idle_7.png' );
+Idle[9] = Bitmap( 'data/sprites/templerun/Idle_8.png' );
+Idle[10] = Bitmap( 'data/sprites/templerun/Idle_9.png' );
+
+Run = {}
+Run[1] = Bitmap( 'data/sprites/templerun/Run_0.png' );
+Run[2] = Bitmap( 'data/sprites/templerun/Run_1.png' );
+Run[3] = Bitmap( 'data/sprites/templerun/Run_2.png' );
+Run[4] = Bitmap( 'data/sprites/templerun/Run_3.png' );
+Run[5] = Bitmap( 'data/sprites/templerun/Run_4.png' );
+Run[6] = Bitmap( 'data/sprites/templerun/Run_5.png' );
+Run[7] = Bitmap( 'data/sprites/templerun/Run_6.png' );
+Run[8] = Bitmap( 'data/sprites/templerun/Run_7.png' );
+Run[9] = Bitmap( 'data/sprites/templerun/Run_8.png' );
+Run[10] = Bitmap( 'data/sprites/templerun/Run_9.png' );
+
+indy = Bitmap()
+indy:setBitmap( Idle[1] )
+indy.x = 260
+indy.y = 215
+indy.scale = .15
+
+renderlist:add( indy )
 
 print( 'Completed' );
