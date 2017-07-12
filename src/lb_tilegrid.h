@@ -6,6 +6,8 @@
 #include "lb_tileset.h"
 #include "tilegrid.h"
 
+using namespace ManualBind;
+
 struct TileGridBinding : public Binding<TileGridBinding,TileGrid>
 {
     static constexpr const char* class_name = "TileGrid";

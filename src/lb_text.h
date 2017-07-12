@@ -7,6 +7,8 @@
 #include "lb_color.h"
 #include "text.h"
 
+using namespace ManualBind;
+
 struct TextBinding : public Binding<TextBinding,Text>
 {
     static constexpr const char* class_name = "Text";

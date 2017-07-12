@@ -4,6 +4,8 @@
 #include "bitmap.h"
 #include "LuaBinding.h"
 
+using namespace ManualBind;
+
 struct BitmapBinding : public Binding<BitmapBinding,Bitmap>
 {
     static constexpr const char* class_name = "Bitmap";

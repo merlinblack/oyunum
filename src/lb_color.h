@@ -4,6 +4,8 @@
 #include <allegro5/allegro.h>
 #include "LuaBinding.h"
 
+using namespace ManualBind;
+
 struct ColorBinding : public PODBinding<ColorBinding,ALLEGRO_COLOR>
 {
     static constexpr const char* class_name = "AllegroColor";
