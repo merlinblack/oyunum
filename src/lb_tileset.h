@@ -6,6 +6,8 @@
 #include "lb_bitmap.h"
 #include "LuaBinding.h"
 
+using namespace ManualBind;
+
 struct TileSetBinding : public Binding<TileSetBinding,TileSet>
 {
     static constexpr const char* class_name = "TileSet";

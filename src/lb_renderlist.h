@@ -4,6 +4,8 @@
 #include "LuaBinding.h"
 #include "renderlist.h"
 
+using namespace ManualBind;
+
 struct RenderableBinding : public Binding<RenderableBinding,Renderable>
 {
     static constexpr const char* class_name = "Renderable";

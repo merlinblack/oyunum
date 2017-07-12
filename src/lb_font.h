@@ -4,6 +4,8 @@
 #include <allegro5/allegro_font.h>
 #include "LuaBinding.h"
 
+using namespace ManualBind;
+
 struct FontBinding : public PODBinding<FontBinding,ALLEGRO_FONT*>
 {
     static constexpr const char* class_name = "AllegroFont";
