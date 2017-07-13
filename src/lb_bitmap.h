@@ -80,6 +80,8 @@ struct BitmapBinding : public Binding<BitmapBinding,Bitmap>
         BitmapPtr n = fromStack( L, 2 );
 
         b->setBitmap( n );
+
+        return 0;
     }
 
     static int upcast( lua_State* L )
