@@ -140,7 +140,7 @@ void Game::updateMouseText()
 
 void Game::run()
 {
-    if( luaL_dofile( L, "script.lua" ) )
+    if( luaL_dofile( L, "scripts/main.lua" ) )
     {
         std::cerr << lua_tostring( L, -1 ) << std::endl;
         return;
