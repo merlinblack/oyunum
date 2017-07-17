@@ -1,4 +1,7 @@
 print 'Lua Script'
+package.path = './scripts/?.lua;./data/?.lua;' .. package.path
+Sprite = require( 'sprite' )
+map_data = require( 'map' )
 
 prev = 0
 
@@ -9,7 +12,7 @@ function update( t )
     end
     tick( pulse, t )
     tick( slide, t )
-    tick( run_animate, t )
+    tick( animate, t )
 end
 
 function tick( co, t )
@@ -53,28 +56,15 @@ slide = coroutine.create( function()
     end
 end )
 
-idle_animate = coroutine.create( function( time )
+animate = coroutine.create( function( time )
     local prev = time
     while true do
-        for index=1,10 do
-            while time - prev < .20 do
-                time = coroutine.yield()
-            end
-            prev = time
-            indy:setBitmap( Idle[index] )
-        end
-    end
-end )
-
-run_animate = coroutine.create( function( time )
-    local prev = time
-    while true do
-        for index=1,10 do
+        for index=0,9 do
             while time - prev < .08 do
                 time = coroutine.yield()
             end
             prev = time
-            indy:setBitmap( Run[index] )
+            indy:setBitmap( indy_sprite:getframe( 'Run_' .. index ) )
         end
     end
 end )
@@ -83,9 +73,7 @@ ts = TileSet()
 ts:loadSourceBitmap( 'data/dawn_of_the_gods.png' );
 print(ts)
 
-package.path = './data/?.lua;' .. package.path
-map = require( 'map' )
-layer1 = map.layers[1]
+layer1 = map_data.layers[1]
 
 tg = TileGrid( ts, layer1.width, layer1.height )
 tg:setData( layer1.data )
@@ -118,35 +106,11 @@ renderlist:add( tile2 )
 
 print( tile1 )
 
-Idle = {}
-Idle[1] = Bitmap( 'data/sprites/templerun/Idle_0.png' );
-Idle[2] = Bitmap( 'data/sprites/templerun/Idle_1.png' );
-Idle[3] = Bitmap( 'data/sprites/templerun/Idle_2.png' );
-Idle[4] = Bitmap( 'data/sprites/templerun/Idle_3.png' );
-Idle[5] = Bitmap( 'data/sprites/templerun/Idle_4.png' );
-Idle[6] = Bitmap( 'data/sprites/templerun/Idle_5.png' );
-Idle[7] = Bitmap( 'data/sprites/templerun/Idle_6.png' );
-Idle[8] = Bitmap( 'data/sprites/templerun/Idle_7.png' );
-Idle[9] = Bitmap( 'data/sprites/templerun/Idle_8.png' );
-Idle[10] = Bitmap( 'data/sprites/templerun/Idle_9.png' );
-
-Run = {}
-Run[1] = Bitmap( 'data/sprites/templerun/Run_0.png' );
-Run[2] = Bitmap( 'data/sprites/templerun/Run_1.png' );
-Run[3] = Bitmap( 'data/sprites/templerun/Run_2.png' );
-Run[4] = Bitmap( 'data/sprites/templerun/Run_3.png' );
-Run[5] = Bitmap( 'data/sprites/templerun/Run_4.png' );
-Run[6] = Bitmap( 'data/sprites/templerun/Run_5.png' );
-Run[7] = Bitmap( 'data/sprites/templerun/Run_6.png' );
-Run[8] = Bitmap( 'data/sprites/templerun/Run_7.png' );
-Run[9] = Bitmap( 'data/sprites/templerun/Run_8.png' );
-Run[10] = Bitmap( 'data/sprites/templerun/Run_9.png' );
+indy_sprite = Sprite( 'data/sprites/templerun' )
 
 indy = Bitmap()
-indy:setBitmap( Idle[1] )
 indy.x = 260
-indy.y = 215
-indy.scale = .15
+indy.y = 200
 
 renderlist:add( indy )
 

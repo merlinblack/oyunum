@@ -19,23 +19,11 @@ include_directories(
 # we don't want to copy if we're building in the source dir
 if (NOT CMAKE_CURRENT_SOURCE_DIR STREQUAL CMAKE_CURRENT_BINARY_DIR)
 
-    # list of files for which we add a copy rule
-    set(data_SHADOW script.lua)
-
-    foreach(item IN LISTS data_SHADOW)
-        message(STATUS ${item})
-        add_custom_command(
-            OUTPUT "${CMAKE_CURRENT_BINARY_DIR}/${item}"
-            COMMAND ${CMAKE_COMMAND} -E copy_if_different "${CMAKE_CURRENT_SOURCE_DIR}/${item}" "${CMAKE_CURRENT_BINARY_DIR}/${item}"
-            DEPENDS "${CMAKE_CURRENT_SOURCE_DIR}/${item}"
-        )
-    endforeach()
-
     # list of directories for which we add a copy rule
-    set(data_SHADOW data)
+    set(data_SHADOW scripts data)
 
     foreach(item IN LISTS data_SHADOW)
-        message(STATUS ${item})
+        message(STATUS "Configure directory: " ${item})
         add_custom_command(
             OUTPUT "${CMAKE_CURRENT_BINARY_DIR}/${item}"
             COMMAND ${CMAKE_COMMAND} -E copy_directory "${CMAKE_CURRENT_SOURCE_DIR}/${item}" "${CMAKE_CURRENT_BINARY_DIR}/${item}"
@@ -57,7 +45,7 @@ target_link_libraries(oyunum
 set_property(TARGET oyunum PROPERTY CXX_STANDARD 11)
 set_property(TARGET oyunum PROPERTY CXX_STANDARD_REQUIRED ON)
 
-add_custom_target(data-target ALL DEPENDS "${CMAKE_CURRENT_BINARY_DIR}/data" "${CMAKE_CURRENT_BINARY_DIR}/script.lua")
+add_custom_target(data-target ALL DEPENDS "${CMAKE_CURRENT_BINARY_DIR}/data" "${CMAKE_CURRENT_BINARY_DIR}/scripts")
 
 include(GitVersioning)
 enable_git_versioning(oyunum)
