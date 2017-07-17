@@ -40,12 +40,6 @@ class Game
     ALLEGRO_FONT* font;
     ALLEGRO_BITMAP* icon;
 
-    ALLEGRO_BITMAP* buffer;
-    int scaleW;
-    int scaleH;
-    int scaleX;
-    int scaleY;
-    
     RenderListPtr renderlist;
 
     TextPtr fpsText;

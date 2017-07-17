@@ -24,8 +24,6 @@ bool Game::createDisplay()
         return false;
     al_set_window_title( display, "My Game" );
 
-    buffer = al_create_bitmap( SCREEN_W, SCREEN_H );
-
     resize();
 
     return true;
@@ -38,12 +36,11 @@ void Game::resize()
 
     float sx = width / (float)SCREEN_W;
     float sy = height / (float)SCREEN_H;
-    float scale = std::min( sx, sy );
 
-    scaleW = SCREEN_W * scale;
-    scaleH = SCREEN_H * scale;
-    scaleX = (width - scaleW) / 2;
-    scaleY = (height - scaleH) / 2;
+    ALLEGRO_TRANSFORM trans;
+    al_identity_transform(&trans);
+    al_scale_transform(&trans, sx, sy);
+    al_use_transform(&trans);
 }
 
 void Game::registerEventSources()
@@ -245,17 +242,9 @@ void Game::run()
         {
             redraw = false;
 
-            al_set_target_bitmap( buffer );
-
             al_clear_to_color( al_map_rgb( 83, 24, 24 ) );
 
             renderlist->render();
-
-            al_set_target_backbuffer( display );
-
-            al_clear_to_color( al_map_rgb( 0, 0, 0 ) );
-            
-            al_draw_scaled_bitmap( buffer, 0, 0, SCREEN_W, SCREEN_H, scaleX, scaleY, scaleW, scaleH, 0 );
 
             al_flip_display();
 
