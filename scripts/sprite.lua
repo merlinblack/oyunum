@@ -1,10 +1,11 @@
 require 'class'
+require 'dozipfile'
 
 class 'Sprite' 
 
 function Sprite:__init( file_base_name )
     self.bitmap = Bitmap( file_base_name .. '.png' )
-    self.frames = dofile( file_base_name .. '.lua' )
+    self.frames = dozipfile( file_base_name .. '.lua.gz' )
 end
 
 function Sprite:getframe( name )
