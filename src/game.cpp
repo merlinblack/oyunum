@@ -93,6 +93,10 @@ bool Game::boot()
 
     al_set_display_icon( display, icon );
 
+    console = std::make_shared<Console>( font, al_map_rgba( 0, 0, 0, 0 ), 0, 0, SCREEN_W, SCREEN_H );
+
+    console->print( std::string(  "Está es una prueba\nTeşekker edirim\nOne\t1\nTwo\t2\nThree\t3" ) );
+
     initialiseLua();
 
     redraw = true;
