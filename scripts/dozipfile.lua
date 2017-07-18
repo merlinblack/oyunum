@@ -7,7 +7,7 @@ function dozipfile( file )
         return nil, err
     end
     
-    code, err = loadstring( out, file )
+    code, err = load( out, file )
 
     if code then 
         return code()

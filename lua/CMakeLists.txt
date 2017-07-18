@@ -1,4 +1,4 @@
-set (${PROJECT_NAME}_LUA_C_FLAGS "-O3" CACHE STRING "${PROJECT_NAME} Extra C Flags for Lua" )
+set (${PROJECT_NAME}_LUA_C_FLAGS "-O3 -DLUA_COMPAT_BITLIB" CACHE STRING "${PROJECT_NAME} Extra C Flags for Lua" )
 
 # Extra C flags for Lua
 set( CMAKE_C_FLAGS "${CMAKE_C_FLAGS} ${${PROJECT_NAME}_LUA_C_FLAGS}")

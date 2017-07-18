@@ -2,5 +2,5 @@
 	path = manualbind
 	url = https://github.com/merlinblack/manualbind.git
 [submodule "zzlib"]
-	path = zzlib
+	path = scripts/zzlib
 	url = https://github.com/zerkman/zzlib.git
