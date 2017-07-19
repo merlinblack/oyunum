@@ -11,7 +11,7 @@
 #define CONSOLE_MAX_LINES 128
 #define CONSOLE_LINE_LENGTH 160
 #define CONSOLE_TAB_STOP 8
-#define CONSOLE_LINE_COUNT 25
+#define CONSOLE_LINE_COUNT 15
 
 #include <iostream>
 using std::cout;
@@ -23,31 +23,17 @@ class Console : public Renderable
 {
     StringVector mLines;
     ALLEGRO_FONT *mFont;
-    ALLEGRO_COLOR mColor;
+    int width;
 
     lua_State* mL;
 
-    int mX;
-    int mY;
-    int mW;
-    int mH;
     int mStartLine;
 
     public:
 
-    Console( lua_State* L, ALLEGRO_FONT* font, ALLEGRO_COLOR color, int x, int y, int w, int h )
-        : mFont(font), mColor(color), mL(L), mX(x), mY(y), mW(w), mH(h), mStartLine(0)
+    Console( lua_State* L, ALLEGRO_FONT* font, int _width )
+        : mFont(font), mL(L), width(_width), mStartLine(0)
     {}
-
-    void setColor( ALLEGRO_COLOR color )
-    {
-        mColor = color;
-    }
-
-    ALLEGRO_COLOR getColor()
-    {
-        return mColor;
-    }
 
     void clear()
     {
@@ -123,7 +109,16 @@ class Console : public Renderable
 
     void render()
     {
-        //al_draw_text( mFont, mColor, mX, mY, ALLEGRO_ALIGN_CENTRE, mText.c_str() );
+        int y = 0;
+        ALLEGRO_COLOR color = al_map_rgb( 255, 255, 255 );
+
+        al_draw_filled_rectangle( 0, 0, width, CONSOLE_LINE_COUNT*16, al_map_rgba( 0, 0, 0, 200 ) );
+
+        for( const auto& line : mLines )
+        {
+            al_draw_text( mFont, color, 5, y, ALLEGRO_ALIGN_LEFT, line.c_str() );
+            y += 16;
+        }
     }
 
 };

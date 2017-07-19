@@ -87,7 +87,6 @@ bool Game::boot()
     registerEventSources();
 
     font = al_load_font( "data/fixed_font.tga", 0, 0 );
-    //font = al_load_font( "data/DejaVuSans.ttf", -16, 0 );
 
     icon = al_load_bitmap( "data/icon.tga" );
 
@@ -97,9 +96,12 @@ bool Game::boot()
     al_set_display_icon( display, icon );
 
     initialiseLua();
+    
+    ALLEGRO_FONT* console_font = al_load_font( "data/liberation_mono/LiberationMono-Bold.ttf", -16, ALLEGRO_TTF_NO_KERNING );
 
-    console = std::make_shared<Console>( L, font, al_map_rgba( 0, 0, 0, 0 ), 0, 0, SCREEN_W, SCREEN_H );
-    console->print( std::string(  "Está es una prueba\nTeşekker edirim\nOne\t1\nTwo\t2\nThree\t3" ) );
+    console = std::make_shared<Console>( L, console_font, SCREEN_W );
+    console->setOrder(255);
+    console->print( std::string(  "Está es una prueba\nTeşekker edirim\nOne\t1\nTwo\t2\nÜç\t3\nDört\t4" ) );
 
     redraw = true;
 
@@ -125,9 +127,9 @@ void Game::setScene()
     mouseText = make_shared<Text>( font, al_map_rgb( 255, 255, 255 ), 61, 68 );
     rl->add( mouseText );
 
-    rl->setOrder( 255 );
+    rl->setOrder( 254 );
 
-    renderlist->add( std::move(rl) );
+    renderlist->insert( std::move(rl) );
 
     updateMouseText();
 }
@@ -252,6 +254,8 @@ void Game::run()
             al_clear_to_color( al_map_rgb( 83, 24, 24 ) );
 
             renderlist->render();
+
+            console->render();
 
             al_flip_display();
 
