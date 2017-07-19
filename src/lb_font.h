@@ -28,7 +28,20 @@ struct FontBinding : public PODBinding<FontBinding,ALLEGRO_FONT*>
 
     static int create( lua_State* L )
     {
-        return luaL_error( L, "Not implemented yet" );
+        const char* filename = luaL_checkstring( L, 1 );
+        int size = luaL_checknumber( L, 2 );
+
+        ALLEGRO_FONT* font = al_load_font( filename, size, 0 );
+
+        if( font ) {
+            push( L, font );
+        }
+        else
+        {
+            lua_pushnil( L );
+        }
+
+        return 1;
     }
 
 };

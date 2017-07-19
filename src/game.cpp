@@ -14,6 +14,7 @@ void Game::initialiseAllegro()
     al_install_keyboard();
     al_init_image_addon();
     al_init_font_addon();
+    al_init_ttf_addon();
 }
 
 bool Game::createDisplay()
@@ -86,6 +87,8 @@ bool Game::boot()
     registerEventSources();
 
     font = al_load_font( "data/fixed_font.tga", 0, 0 );
+    //font = al_load_font( "data/DejaVuSans.ttf", -16, 0 );
+
     icon = al_load_bitmap( "data/icon.tga" );
 
     if( !font || !icon )
@@ -93,11 +96,10 @@ bool Game::boot()
 
     al_set_display_icon( display, icon );
 
-    console = std::make_shared<Console>( font, al_map_rgba( 0, 0, 0, 0 ), 0, 0, SCREEN_W, SCREEN_H );
-
-    console->print( std::string(  "Está es una prueba\nTeşekker edirim\nOne\t1\nTwo\t2\nThree\t3" ) );
-
     initialiseLua();
+
+    console = std::make_shared<Console>( L, font, al_map_rgba( 0, 0, 0, 0 ), 0, 0, SCREEN_W, SCREEN_H );
+    console->print( std::string(  "Está es una prueba\nTeşekker edirim\nOne\t1\nTwo\t2\nThree\t3" ) );
 
     redraw = true;
 
