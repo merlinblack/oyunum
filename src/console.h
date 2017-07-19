@@ -2,6 +2,7 @@
 #define CONSOLE_H
 
 #include <allegro5/allegro_font.h>
+#include <lua.hpp>
 #include <string>
 #include <list>
 #include <memory>
@@ -23,6 +24,9 @@ class Console : public Renderable
     StringVector mLines;
     ALLEGRO_FONT *mFont;
     ALLEGRO_COLOR mColor;
+
+    lua_State* mL;
+
     int mX;
     int mY;
     int mW;
@@ -31,8 +35,8 @@ class Console : public Renderable
 
     public:
 
-    Console( ALLEGRO_FONT* font, ALLEGRO_COLOR color, int x, int y, int w, int h )
-        : mFont(font), mColor(color), mX(x), mY(y), mW(w), mH(h), mStartLine(0)
+    Console( lua_State* L, ALLEGRO_FONT* font, ALLEGRO_COLOR color, int x, int y, int w, int h )
+        : mFont(font), mColor(color), mL(L), mX(x), mY(y), mW(w), mH(h), mStartLine(0)
     {}
 
     void setColor( ALLEGRO_COLOR color )
@@ -112,7 +116,7 @@ class Console : public Renderable
 
         // Make sure last text printed is in view.
         if( mLines.size() > CONSOLE_LINE_COUNT - 1 )
-            mStartLine = mLines.size() - (CONSOLE_LINE_COUNT - 1);
+            mStartLine = std::max( (int)mLines.size() - (CONSOLE_LINE_COUNT - 1), 0 );
 
         return;
     }

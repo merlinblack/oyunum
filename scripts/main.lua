@@ -86,8 +86,17 @@ white = AllegroColor( 255, 255, 255, 255 )
 grey  = AllegroColor( 128, 128, 128, 255 )
 print( grey )
 
-hello = Text( "Hello", fixed_font, white, 100, 100 )
-world = Text( "World", fixed_font, grey,  120, 120 )
+ttf_font = AllegroFont( 'data/6809-chargen/6809 chargen.ttf', -32 );
+
+if not ttf_font then
+    print( "It didn't load!!" )
+    ttf_font = fixed_font
+else
+    print( "Yay!" )
+end
+
+hello = Text( "Günydin", ttf_font, white, 100, 100 )
+world = Text( "Hola", ttf_font, grey,  130, 130 )
 
 print( hello )
 print( fixed_font )
