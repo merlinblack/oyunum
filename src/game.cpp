@@ -185,6 +185,23 @@ void Game::run()
             {
                 renderlist->add( mouseText );
             }
+
+            if( event.keyboard.keycode == ALLEGRO_KEY_TILDE )
+            {
+                console->toggleVisibility();
+            }
+
+            if( console->isVisible() )
+            {
+                if( event.keyboard.keycode == ALLEGRO_KEY_PGUP )
+                {
+                    console->pageUp();
+                }
+                if( event.keyboard.keycode == ALLEGRO_KEY_PGDN )
+                {
+                    console->pageDown();
+                }
+            }
         }
 
         if( event.type == ALLEGRO_EVENT_TIMER && event.timer.source == frameTimer )
@@ -283,6 +300,7 @@ void Game::destroyDisplay()
 
 Game::~Game()
 {
+    console.reset();
     if( L ) {
         lua_close( L );
     }
