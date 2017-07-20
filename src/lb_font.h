@@ -13,6 +13,7 @@ struct FontBinding : public PODBinding<FontBinding,ALLEGRO_FONT*>
     static luaL_Reg* members()
     {
         static luaL_Reg members[] = {
+            { "__gc", cleanup },
             { nullptr, nullptr }
         };
         return members;
@@ -42,6 +43,13 @@ struct FontBinding : public PODBinding<FontBinding,ALLEGRO_FONT*>
         }
 
         return 1;
+    }
+
+    static int cleanup( lua_State* L )
+    {
+        ALLEGRO_FONT* font = fromStack( L, 1 );
+
+        al_destroy_font( font );
     }
 
 };
