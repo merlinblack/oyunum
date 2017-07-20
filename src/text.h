@@ -1,26 +1,26 @@
 #ifndef TEXT_H
 #define TEXT_H
 
-#include <allegro5/allegro_font.h>
 #include <sstream>
 #include <memory>
 #include "renderlist.h"
+#include "font.h"
 
 class Text : public Renderable
 {
     std::string mText;
-    ALLEGRO_FONT *mFont;
+    FontPtr mFont;
     ALLEGRO_COLOR mColor;
     int mX;
     int mY;
 
     public:
 
-    Text( ALLEGRO_FONT* font, ALLEGRO_COLOR color, int x, int y )
+    Text( FontPtr font, ALLEGRO_COLOR color, int x, int y )
         : mFont(font), mColor(color),  mX(x), mY(y)
     {}
 
-    Text( const std::string&& text, ALLEGRO_FONT* font, ALLEGRO_COLOR color, int x, int y )
+    Text( const std::string&& text, FontPtr font, ALLEGRO_COLOR color, int x, int y )
         : mText(std::move(text)), mFont(font), mColor(color),  mX(x), mY(y)
     {}
 
@@ -51,7 +51,7 @@ class Text : public Renderable
 
     void render()
     {
-        al_draw_text( mFont, mColor, mX, mY, ALLEGRO_ALIGN_CENTRE, mText.c_str() );
+        al_draw_text( mFont->get(), mColor, mX, mY, ALLEGRO_ALIGN_CENTRE, mText.c_str() );
     }
 
 };

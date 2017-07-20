@@ -86,7 +86,7 @@ white = AllegroColor( 255, 255, 255, 255 )
 grey  = AllegroColor( 128, 128, 128, 255 )
 print( grey )
 
-ttf_font = AllegroFont( 'data/6809-chargen/6809 chargen.ttf', -32 );
+ttf_font = Font( 'data/6809-chargen/6809 chargen.ttf', -32 );
 
 if not ttf_font then
     print( "It didn't load!!" )
