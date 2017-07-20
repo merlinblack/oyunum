@@ -14,6 +14,7 @@
 
 #include "renderlist.h"
 #include "text.h"
+#include "font.h"
 #include "rectangle.h"
 #include "bitmap.h"
 #include "tileset.h"
@@ -39,10 +40,11 @@ class Game
     ALLEGRO_TIMER* frameTimer;
     ALLEGRO_TIMER* scriptTimer;
     ALLEGRO_EVENT_QUEUE* eventQueue;
-    ALLEGRO_FONT* font;
     ALLEGRO_BITMAP* icon;
 
     RenderListPtr renderlist;
+
+    FontPtr font;
 
     TextPtr fpsText;
     TextPtr spsText;

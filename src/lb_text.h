@@ -35,7 +35,7 @@ struct TextBinding : public Binding<TextBinding,Text>
     static int create( lua_State* L )
     {
         std::string text = luaL_checkstring( L, 1 );
-        ALLEGRO_FONT* font = (ALLEGRO_FONT*) FontBinding::fromStack( L, 2 );
+        FontPtr font = FontBinding::fromStack( L, 2 );
         ALLEGRO_COLOR color = ColorBinding::fromStack( L, 3 );
         int x = luaL_checkinteger( L, 4 );
         int y = luaL_checkinteger( L, 5 );

@@ -86,7 +86,7 @@ bool Game::boot()
 
     registerEventSources();
 
-    font = al_load_font( "data/fixed_font.tga", 0, 0 );
+    font = std::make_shared<Font>( "data/fixed_font.tga", 0, 0 );
 
     icon = al_load_bitmap( "data/icon.tga" );
 
@@ -97,7 +97,7 @@ bool Game::boot()
 
     initialiseLua();
     
-    ALLEGRO_FONT* console_font = al_load_font( "data/liberation_mono/LiberationMono-Bold.ttf", -16, ALLEGRO_TTF_NO_KERNING );
+    FontPtr console_font = std::make_shared<Font>( "data/liberation_mono/LiberationMono-Bold.ttf", -16, ALLEGRO_TTF_NO_KERNING );
 
     console = std::make_shared<Console>( L, console_font, SCREEN_W );
     console->setOrder(255);

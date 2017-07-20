@@ -1,12 +1,12 @@
 #ifndef CONSOLE_H
 #define CONSOLE_H
 
-#include <allegro5/allegro_font.h>
 #include <lua.hpp>
 #include <string>
 #include <list>
 #include <memory>
 #include "renderlist.h"
+#include "font.h"
 
 #define CONSOLE_MAX_LINES 128
 #define CONSOLE_LINE_LENGTH 79
@@ -22,7 +22,7 @@ using StringVector = std::list<std::string>;
 class Console : public Renderable
 {
     StringVector mLines;
-    ALLEGRO_FONT *mFont;
+    FontPtr mFont;
     lua_State* mL;
     int width;
     bool visible;
@@ -31,7 +31,7 @@ class Console : public Renderable
 
     public:
 
-    Console( lua_State* L, ALLEGRO_FONT* font, int _width )
+    Console( lua_State* L, FontPtr font, int _width )
         : mFont(font), mL(L), width(_width), visible(true), mStartLine(0)
     {
         lua_pushlightuserdata( mL, this );
@@ -180,7 +180,7 @@ class Console : public Renderable
         {
             if( line_no >= mStartLine && y < CONSOLE_LINE_COUNT*16 )
             {
-                al_draw_text( mFont, color, 5, y, ALLEGRO_ALIGN_LEFT, line.c_str() );
+                al_draw_text( mFont->get(), color, 5, y, ALLEGRO_ALIGN_LEFT, line.c_str() );
                 y += 16;
             }
             line_no++;
