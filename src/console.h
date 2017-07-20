@@ -7,6 +7,7 @@
 #include <memory>
 #include "renderlist.h"
 #include "font.h"
+#include "editstring.h"
 
 #define CONSOLE_MAX_LINES 128
 #define CONSOLE_LINE_LENGTH 79
@@ -22,23 +23,29 @@ using StringVector = std::list<std::string>;
 class Console : public Renderable
 {
     StringVector mLines;
+    EditString command;
+    std::string prompt;
     FontPtr mFont;
     lua_State* mL;
     int width;
     bool visible;
 
     int mStartLine;
+    double cursorBlinkTime;
+    bool cursorBlink;
 
     public:
 
     Console( lua_State* L, FontPtr font, int _width )
-        : mFont(font), mL(L), width(_width), visible(true), mStartLine(0)
+        : mFont(font), mL(L), width(_width), visible(true), mStartLine(0), cursorBlink(0)
     {
         lua_pushlightuserdata( mL, this );
         lua_setfield( mL, LUA_REGISTRYINDEX, "console" );
         lua_getglobal( mL, "print" );
         lua_setglobal( mL, "oldprint" );
         lua_register( mL, "print", luaprint );
+        prompt = "Lua> ";
+        command.setText( "print( 'Çilek seviyorum' )" );
     }
 
     ~Console()
@@ -62,6 +69,26 @@ class Console : public Renderable
     void clear()
     {
         mLines.clear();
+    }
+
+    bool injectKeyPress( const ALLEGRO_EVENT& event )
+    {
+        if( ! visible )
+            return false;
+
+        if( event.keyboard.keycode == ALLEGRO_KEY_PGUP )
+        {
+            pageUp();
+            return true;
+        }
+
+        if( event.keyboard.keycode == ALLEGRO_KEY_PGDN )
+        {
+            pageDown();
+            return true;
+        }
+
+        return command.injectKeyPress( event );
     }
 
     void addLine( const std::string& line )
@@ -173,17 +200,43 @@ class Console : public Renderable
         int y = 0;
         int line_no = 1;
         ALLEGRO_COLOR color = al_map_rgb( 255, 255, 255 );
+        ALLEGRO_COLOR curcolor = al_map_rgb( 255, 50, 50 );
 
         al_draw_filled_rectangle( 0, 0, width, CONSOLE_LINE_COUNT*16, al_map_rgba( 0, 0, 0, 200 ) );
 
         for( const auto& line : mLines )
         {
-            if( line_no >= mStartLine && y < CONSOLE_LINE_COUNT*16 )
+            if( line_no >= mStartLine && y < (CONSOLE_LINE_COUNT-1)*16 )
             {
                 al_draw_text( mFont->get(), color, 5, y, ALLEGRO_ALIGN_LEFT, line.c_str() );
                 y += 16;
             }
             line_no++;
+        }
+
+        std::stringstream ss;
+
+        ss << prompt;
+        ss << command.getText();
+
+        al_draw_text( mFont->get(), color, 5, y, ALLEGRO_ALIGN_LEFT, ss.str().c_str() );
+
+        double t = al_get_time();
+        if( t - cursorBlinkTime > 0.7 )
+        {
+            cursorBlinkTime = t;
+            cursorBlink = ! cursorBlink;
+        }
+
+        if( cursorBlink )
+        {
+            int charwidth = al_get_text_width( mFont->get(), "X" );
+            int x = charwidth * ( command.getPosition() + prompt.length());
+            int ys = y + 1;
+            if( !command.isOverwriting() ) {
+                ys += 14;
+            }
+            al_draw_rectangle( x+5, ys, x+13, y+15, curcolor, 1 );
         }
     }
 

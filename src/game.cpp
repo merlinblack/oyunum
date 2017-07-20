@@ -171,35 +171,35 @@ void Game::run()
         if( event.type == ALLEGRO_EVENT_DISPLAY_CLOSE )
             break;
 
-        if( event.type == ALLEGRO_EVENT_KEY_DOWN )
+        if( event.type == ALLEGRO_EVENT_KEY_CHAR )
         {
             if( event.keyboard.keycode == ALLEGRO_KEY_ESCAPE )
-                break;
-
-            if( event.keyboard.keycode == ALLEGRO_KEY_Z )
             {
-                renderlist->remove( mouseText );
-            }
-
-            if( event.keyboard.keycode == ALLEGRO_KEY_X )
-            {
-                renderlist->add( mouseText );
-            }
-
-            if( event.keyboard.keycode == ALLEGRO_KEY_TILDE )
-            {
-                console->toggleVisibility();
+                if( console->isVisible() )
+                {
+                    console->toggleVisibility();
+                    continue;
+                }
+                else
+                {
+                    break;
+                }
             }
 
             if( console->isVisible() )
             {
-                if( event.keyboard.keycode == ALLEGRO_KEY_PGUP )
+                if( console->injectKeyPress( event ) )
                 {
-                    console->pageUp();
+                    redraw = true;
+                    continue;
                 }
-                if( event.keyboard.keycode == ALLEGRO_KEY_PGDN )
+            }
+            else
+            {
+                if( event.keyboard.keycode == ALLEGRO_KEY_TILDE )
                 {
-                    console->pageDown();
+                    console->toggleVisibility();
+                    continue;
                 }
             }
         }
