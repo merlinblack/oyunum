@@ -9,7 +9,7 @@
 #include "renderlist.h"
 
 #define CONSOLE_MAX_LINES 128
-#define CONSOLE_LINE_LENGTH 160
+#define CONSOLE_LINE_LENGTH 79
 #define CONSOLE_TAB_STOP 8
 #define CONSOLE_LINE_COUNT 15
 
@@ -23,17 +23,41 @@ class Console : public Renderable
 {
     StringVector mLines;
     ALLEGRO_FONT *mFont;
-    int width;
-
     lua_State* mL;
+    int width;
+    bool visible;
 
     int mStartLine;
 
     public:
 
     Console( lua_State* L, ALLEGRO_FONT* font, int _width )
-        : mFont(font), mL(L), width(_width), mStartLine(0)
-    {}
+        : mFont(font), mL(L), width(_width), visible(true), mStartLine(0)
+    {
+        lua_pushlightuserdata( mL, this );
+        lua_setfield( mL, LUA_REGISTRYINDEX, "console" );
+        lua_getglobal( mL, "print" );
+        lua_setglobal( mL, "oldprint" );
+        lua_register( mL, "print", luaprint );
+    }
+
+    ~Console()
+    {
+        lua_pushnil( mL );
+        lua_setfield( mL, LUA_REGISTRYINDEX, "console" );
+        lua_getglobal( mL, "oldprint" );
+        lua_setglobal( mL, "print" );
+    }
+
+    bool isVisible()
+    {
+        return visible;
+    }
+
+    void toggleVisibility()
+    {
+        visible = ! visible;
+    }
 
     void clear()
     {
@@ -72,7 +96,7 @@ class Console : public Renderable
                 if( codepoint != '\n' ) {
                     al_ustr_prev( unicode, &pos );      //we want the current char for the next line
                 }
-                column = 0;
+                column = 1;
             }
             else if( codepoint == '\t' )
             {
@@ -95,6 +119,7 @@ class Console : public Renderable
                 column++;
             }
         }
+
         if( line.length() )
         {
             addLine( line );
@@ -107,18 +132,69 @@ class Console : public Renderable
         return;
     }
 
+    static int luaprint( lua_State* L )
+    {
+        std::string output;
+        int nArgs = lua_gettop( L );
+        lua_getfield( L, LUA_REGISTRYINDEX, "console" );
+        Console *self = static_cast<Console*>(lua_touserdata( L, -1 ));
+
+        lua_getglobal( L, "tostring" );
+
+        for( int index = 1; index <= nArgs; index++ )
+        {
+            const char *s;
+
+            lua_pushvalue( L, -1 ); // tostring func
+            lua_pushvalue( L, index );
+            lua_pcall( L, 1, 1, 0 );
+            s = lua_tostring( L, -1 );
+
+            if( !s ) {
+                return luaL_error( L, "'tostring' must return a string to 'print'" );
+            }
+
+            output += s;
+
+            if( index < nArgs )
+                output += "\t";
+
+            lua_pop( L, 1 );
+        }
+
+        self->print( output );
+    }
+
     void render()
     {
+        if( !visible )
+            return;
+
         int y = 0;
+        int line_no = 1;
         ALLEGRO_COLOR color = al_map_rgb( 255, 255, 255 );
 
         al_draw_filled_rectangle( 0, 0, width, CONSOLE_LINE_COUNT*16, al_map_rgba( 0, 0, 0, 200 ) );
 
         for( const auto& line : mLines )
         {
-            al_draw_text( mFont, color, 5, y, ALLEGRO_ALIGN_LEFT, line.c_str() );
-            y += 16;
+            if( line_no >= mStartLine && y < CONSOLE_LINE_COUNT*16 )
+            {
+                al_draw_text( mFont, color, 5, y, ALLEGRO_ALIGN_LEFT, line.c_str() );
+                y += 16;
+            }
+            line_no++;
         }
+    }
+
+    void pageUp()
+    {
+        mStartLine = std::max( 0, mStartLine - 5 );
+    }
+
+    void pageDown()
+    {
+        mStartLine = std::min( (int)mLines.size() - CONSOLE_LINE_COUNT + 1, mStartLine + 5 );
     }
 
 };
