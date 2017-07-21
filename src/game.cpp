@@ -236,6 +236,7 @@ void Game::run()
 
             try {
                 updateScripts( t );
+                console->resume();
             } 
             catch( LuaException &e )
             {
