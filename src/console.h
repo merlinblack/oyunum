@@ -8,6 +8,7 @@
 #include "renderlist.h"
 #include "font.h"
 #include "editstring.h"
+#include "luainterpreter.h"
 
 #define CONSOLE_MAX_LINES 128
 #define CONSOLE_LINE_LENGTH 79
@@ -24,7 +25,7 @@ class Console : public Renderable
 {
     StringVector mLines;
     EditString command;
-    std::string prompt;
+    LuaInterpreter interpreter;
     FontPtr mFont;
     lua_State* mL;
     int width;
@@ -44,8 +45,8 @@ class Console : public Renderable
         lua_getglobal( mL, "print" );
         lua_setglobal( mL, "oldprint" );
         lua_register( mL, "print", luaprint );
-        prompt = "Lua> ";
-        command.setText( "print( 'Çilek seviyorum' )" );
+        lua_register( mL, "console", luaCommand );
+        interpreter.init( mL );
     }
 
     ~Console()
@@ -54,6 +55,8 @@ class Console : public Renderable
         lua_setfield( mL, LUA_REGISTRYINDEX, "console" );
         lua_getglobal( mL, "oldprint" );
         lua_setglobal( mL, "print" );
+        lua_pushnil( mL );
+        lua_setglobal( mL, "console" );
     }
 
     bool isVisible()
@@ -69,6 +72,38 @@ class Console : public Renderable
     void clear()
     {
         mLines.clear();
+        mStartLine = 1;
+    }
+
+    static int luaCommand( lua_State* L )
+    {
+        static const char* opts[] = { "open", "close", "toggle", "clear", "savehistory", nullptr };
+
+        lua_getfield( L, LUA_REGISTRYINDEX, "console" );
+        Console *self = static_cast<Console*>(lua_touserdata( L, -1 ));
+
+        int cmd = luaL_checkoption( L, 1, nullptr, opts );
+
+        switch( cmd )
+        {
+            case 0:
+                self->visible = true;
+                break;
+            case 1:
+                self->visible = false;
+                break;
+            case 2:
+                self->visible = ! self->visible;
+                break;
+            case 3:
+                self->clear();
+                break;
+            case 5:
+                // savehistory
+                break;
+        }
+
+        return 0;
     }
 
     bool injectKeyPress( const ALLEGRO_EVENT& event )
@@ -88,7 +123,21 @@ class Console : public Renderable
             return true;
         }
 
+        if( event.keyboard.keycode == ALLEGRO_KEY_ENTER || 
+            event.keyboard.keycode == ALLEGRO_KEY_PAD_ENTER )
+        {
+            print( command.getText() );
+            interpreter.insertLine( command.getText() );
+            command.clear();
+            return true;
+        }
+
         return command.injectKeyPress( event );
+    }
+
+    void resume()
+    {
+        interpreter.resume();
     }
 
     void addLine( const std::string& line )
@@ -154,7 +203,7 @@ class Console : public Renderable
 
         // Make sure last text printed is in view.
         if( mLines.size() > CONSOLE_LINE_COUNT - 1 )
-            mStartLine = std::max( (int)mLines.size() - (CONSOLE_LINE_COUNT - 1), 0 );
+            mStartLine = std::max( (int)mLines.size() - CONSOLE_LINE_COUNT + 2, 0 );
 
         return;
     }
@@ -214,6 +263,7 @@ class Console : public Renderable
             line_no++;
         }
 
+        std::string prompt = interpreter.getPrompt();
         std::stringstream ss;
 
         ss << prompt;
@@ -247,7 +297,7 @@ class Console : public Renderable
 
     void pageDown()
     {
-        mStartLine = std::min( (int)mLines.size() - CONSOLE_LINE_COUNT + 1, mStartLine + 5 );
+        mStartLine = std::min( (int)mLines.size() - CONSOLE_LINE_COUNT + 2, mStartLine + 5 );
     }
 
 };

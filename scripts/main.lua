@@ -1,6 +1,7 @@
 print 'Lua Script'
 package.path = './scripts/?.lua;' .. package.path
-Sprite = require( 'sprite' )
+require( 'sprite' )
+require( 'tasks' )
 map_data = dozipfile( './data/map.lua.gz' )
 
 prev = 0
