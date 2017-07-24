@@ -14,6 +14,7 @@
 #define CONSOLE_LINE_LENGTH 79
 #define CONSOLE_TAB_STOP 8
 #define CONSOLE_LINE_COUNT 15
+#define LUA_CONSOLE_INDEX "console"
 
 #include <iostream>
 using std::cout;
@@ -41,7 +42,7 @@ class Console : public Renderable
         : mFont(font), mL(L), width(_width), visible(true), mStartLine(0), cursorBlink(0)
     {
         lua_pushlightuserdata( mL, this );
-        lua_setfield( mL, LUA_REGISTRYINDEX, "console" );
+        lua_setfield( mL, LUA_REGISTRYINDEX, LUA_CONSOLE_INDEX );
         lua_getglobal( mL, "print" );
         lua_setglobal( mL, "oldprint" );
         lua_register( mL, "print", luaprint );
@@ -52,7 +53,7 @@ class Console : public Renderable
     ~Console()
     {
         lua_pushnil( mL );
-        lua_setfield( mL, LUA_REGISTRYINDEX, "console" );
+        lua_setfield( mL, LUA_REGISTRYINDEX, LUA_CONSOLE_INDEX );
         lua_getglobal( mL, "oldprint" );
         lua_setglobal( mL, "print" );
         lua_pushnil( mL );
@@ -79,7 +80,7 @@ class Console : public Renderable
     {
         static const char* opts[] = { "open", "close", "toggle", "clear", "savehistory", nullptr };
 
-        lua_getfield( L, LUA_REGISTRYINDEX, "console" );
+        lua_getfield( L, LUA_REGISTRYINDEX, LUA_CONSOLE_INDEX );
         Console *self = static_cast<Console*>(lua_touserdata( L, -1 ));
 
         int cmd = luaL_checkoption( L, 1, nullptr, opts );
@@ -212,7 +213,7 @@ class Console : public Renderable
     {
         std::string output;
         int nArgs = lua_gettop( L );
-        lua_getfield( L, LUA_REGISTRYINDEX, "console" );
+        lua_getfield( L, LUA_REGISTRYINDEX, LUA_CONSOLE_INDEX );
         Console *self = static_cast<Console*>(lua_touserdata( L, -1 ));
 
         lua_getglobal( L, "tostring" );

@@ -16,6 +16,20 @@ function update( t )
     tick( animate, t )
 end
 
+function keyEvent( code, char )
+    print( code, char, utf8.char(char) )
+end
+
+function mouseEvent( what, button, x, y, z, dx, dy, dz )
+    if what ~= 'move' then
+        print( what, button, x, y, z, dx, dy, dz )
+    end
+end
+
+function clear()
+    console 'clear'
+end
+
 function tick( co, t )
     ret, error = coroutine.resume( co, t )
     if not ret and error ~= 'cannot resume dead coroutine' then 
