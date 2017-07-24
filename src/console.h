@@ -14,6 +14,7 @@
 #define CONSOLE_LINE_LENGTH 79
 #define CONSOLE_TAB_STOP 8
 #define CONSOLE_LINE_COUNT 15
+#define CONSOLE_MAX_HISTORY 128
 #define LUA_CONSOLE_INDEX "console"
 
 #include <iostream>
@@ -25,6 +26,8 @@ using StringVector = std::list<std::string>;
 class Console : public Renderable
 {
     StringVector mLines;
+    StringVector mHistory;
+    StringVector::iterator mHistoryLine;
     EditString command;
     LuaInterpreter interpreter;
     FontPtr mFont;
@@ -127,9 +130,19 @@ class Console : public Renderable
         if( event.keyboard.keycode == ALLEGRO_KEY_ENTER || 
             event.keyboard.keycode == ALLEGRO_KEY_PAD_ENTER )
         {
-            print( command.getText() );
-            interpreter.insertLine( command.getText() );
-            command.clear();
+            execute();
+            return true;
+        }
+
+        if( event.keyboard.keycode == ALLEGRO_KEY_UP )
+        {
+            historyUp();
+            return true;
+        }
+
+        if( event.keyboard.keycode == ALLEGRO_KEY_DOWN )
+        {
+            historyDown();
             return true;
         }
 
@@ -301,6 +314,50 @@ class Console : public Renderable
         mStartLine = std::min( (int)mLines.size() - CONSOLE_LINE_COUNT + 2, mStartLine + 5 );
     }
 
+    void execute()
+    {
+        print( interpreter.getPrompt() + command.getText() );
+        interpreter.insertLine( command.getText() );
+        historyAdd( command.getText() );
+        command.clear();
+    }
+
+    void historyUp()
+    {
+        if( ! mHistory.empty() )
+        {
+            if( mHistoryLine == mHistory.begin() )
+            {
+                mHistoryLine = mHistory.end();
+            }
+            mHistoryLine--;
+            command.setText( *mHistoryLine );
+        }
+    }
+
+    void historyDown()
+    {
+        if( ! mHistory.empty() )
+        {
+            mHistoryLine++;
+            if( mHistoryLine == mHistory.end() )
+            {
+                mHistoryLine = mHistory.begin();
+            }
+            command.setText( *mHistoryLine );
+        }
+    }
+
+    void historyAdd( const std::string& cmd )
+    {
+        mHistory.remove( cmd );
+        mHistory.push_back( cmd );
+        if( mHistory.size() > CONSOLE_MAX_HISTORY )
+        {
+            mHistory.pop_front();
+        }
+        mHistoryLine = mHistory.end();
+    }
 };
 
 using ConsolePtr = std::shared_ptr<Console>;
