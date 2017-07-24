@@ -29,8 +29,12 @@
 #define MAX_BUTTONS 4
 
 // 16:9
-#define SCREEN_W    640 
-#define SCREEN_H    360
+//#define SCREEN_W    640 
+//#define SCREEN_H    360
+#define SCREEN_W    800 
+#define SCREEN_H    450
+
+#define LUA_GAME_INDEX  "game"
 
 class Game
 {
@@ -63,9 +67,11 @@ class Game
 
     lua_State* L;
 
+    bool shouldStop;
+
     public:
 
-    Game() : display(nullptr), frameTimer(nullptr), eventQueue(nullptr), redraw(false),L(nullptr)
+    Game() : display(nullptr), frameTimer(nullptr), eventQueue(nullptr), redraw(false), L(nullptr), shouldStop(false)
     {
         for(int i=1; i < MAX_BUTTONS; i++ )
             mouse.buttons[i] = false;
@@ -84,6 +90,9 @@ class Game
     void deregisterEventSources();
     void destroyDisplay();
     ~Game();
+
+    // Lua routines.
+    static int quit( lua_State* L );
 };
 
 #endif // GAME_H

@@ -1,4 +1,5 @@
 #include "game.h"
+#include "git_versioning.h"
 
 #include <iostream>
 using std::cout;
@@ -68,11 +69,23 @@ void Game::initialiseLua()
 
     register_all_classes( L );
 
+    lua_pushlightuserdata( L, this );
+    lua_setfield( L, LUA_REGISTRYINDEX, LUA_GAME_INDEX );
+
+    lua_register( L, "quit", Game::quit );
+
     FontBinding::push( L, font );
     lua_setglobal( L, "fixed_font" );
 
     RenderListBinding::push( L, renderlist );
     lua_setglobal( L, "renderlist" );
+
+    LuaRef info = LuaRef::newTable( L );
+    info["width"] = SCREEN_W;
+    info["height"] = SCREEN_H;
+    info["gitver"] = GIT_REPO_VERSION_STR; 
+    info.push();
+    lua_setglobal( L, "info" );
 }
 
 bool Game::boot()
@@ -155,7 +168,26 @@ void Game::run()
         return;
     }
 
-    LuaRef updateScripts = LuaRef::getGlobal( L, "update" );
+    LuaRef luaUpdate     = LuaRef::getGlobal( L, "update" );
+    LuaRef luaKeyEvent   = LuaRef::getGlobal( L, "keyEvent" );
+    LuaRef luaMouseEvent = LuaRef::getGlobal( L, "mouseEvent" );
+
+    // Check scripts are sane.
+    if( ! luaUpdate.isFunction() )
+    {
+        std::cerr << "Lua update function is not defined." << std::endl;
+        shouldStop = true;
+    }
+    if( ! luaKeyEvent.isFunction() )
+    {
+        std::cerr << "Lua keyEvent function is not defined." << std::endl;
+        shouldStop = true;
+    }
+    if( ! luaMouseEvent.isFunction() )
+    {
+        std::cerr << "Lua mouseEvent function is not defined." << std::endl;
+        shouldStop = true;
+    }
 
     int fps_accum = 0, fps = 0;
     double fps_time = 0; 
@@ -163,7 +195,7 @@ void Game::run()
     int sps_accum = 0, sps = 0;
     double sps_time = 0;
 
-    while( true )
+    while( ! shouldStop )
     {
         ALLEGRO_EVENT event;
         al_wait_for_event( eventQueue, &event );
@@ -171,89 +203,126 @@ void Game::run()
         if( event.type == ALLEGRO_EVENT_DISPLAY_CLOSE )
             break;
 
-        if( event.type == ALLEGRO_EVENT_KEY_CHAR )
-        {
-            if( event.keyboard.keycode == ALLEGRO_KEY_ESCAPE )
+        try {
+            if( event.type == ALLEGRO_EVENT_KEY_CHAR )
             {
+                if( event.keyboard.keycode == ALLEGRO_KEY_ESCAPE )
+                {
+                    if( console->isVisible() )
+                    {
+                        console->toggleVisibility();
+                        continue;
+                    }
+                    else
+                    {
+                        // We grab it here, as 'quit' may change depending
+                        // on what is happening.
+                        LuaRef quit = LuaRef::getGlobal( L, "quit" );
+                        if( quit.isFunction() ) {
+                            quit();
+                        }
+                        continue;
+                    }
+                }
+
                 if( console->isVisible() )
                 {
-                    console->toggleVisibility();
-                    continue;
+                    if( console->injectKeyPress( event ) )
+                    {
+                        redraw = true;
+                        continue;
+                    }
                 }
                 else
                 {
-                    break;
+                    if( event.keyboard.keycode == ALLEGRO_KEY_TILDE )
+                    {
+                        console->toggleVisibility();
+                        continue;
+                    }
                 }
+
+                luaKeyEvent( event.keyboard.keycode, event.keyboard.unichar );
             }
 
-            if( console->isVisible() )
+            if( event.type == ALLEGRO_EVENT_TIMER && event.timer.source == frameTimer )
             {
-                if( console->injectKeyPress( event ) )
+                double t = al_get_time();
+                fps_accum++;
+
+                if( t - fps_time >= 1 )
                 {
-                    redraw = true;
-                    continue;
+                    fps = fps_accum;
+                    fps_accum = 0;
+                    fps_time = t;
+                    fpsText->clearText();
+                    fpsText << "FPS:  " << fps;
                 }
+
+                redraw = true;
             }
-            else
+
+            if( event.type == ALLEGRO_EVENT_TIMER && event.timer.source == scriptTimer )
             {
-                if( event.keyboard.keycode == ALLEGRO_KEY_TILDE )
+                double t = al_get_time();
+                sps_accum++;
+                if( t - sps_time >= 1 )
                 {
-                    console->toggleVisibility();
-                    continue;
+                    sps = sps_accum;
+                    sps_accum = 0;
+                    sps_time = t;
+                    spsText->clearText();
+                    spsText << "SPS: " << sps;
                 }
-            }
-        }
 
-        if( event.type == ALLEGRO_EVENT_TIMER && event.timer.source == frameTimer )
-        {
-            double t = al_get_time();
-            fps_accum++;
-
-            if( t - fps_time >= 1 )
-            {
-                fps = fps_accum;
-                fps_accum = 0;
-                fps_time = t;
-                fpsText->clearText();
-                fpsText << "FPS:  " << fps;
-            }
-
-            redraw = true;
-        }
-
-        if( event.type == ALLEGRO_EVENT_TIMER && event.timer.source == scriptTimer )
-        {
-            double t = al_get_time();
-            sps_accum++;
-            if( t - sps_time >= 1 )
-            {
-                sps = sps_accum;
-                sps_accum = 0;
-                sps_time = t;
-                spsText->clearText();
-                spsText << "SPS: " << sps;
-            }
-
-            try {
-                updateScripts( t );
+                luaUpdate( t );
                 console->resume();
-            } 
-            catch( LuaException &e )
-            {
-                std::cerr << e.what() << std::endl;
+            }
+
+            if( event.type == ALLEGRO_EVENT_MOUSE_BUTTON_DOWN ) {
+                if( event.mouse.button < MAX_BUTTONS )
+                    mouse.buttons[event.mouse.button] = true;
+                updateMouseText();
+                luaMouseEvent( "down", event.mouse.button );
+            }
+
+            if( event.type == ALLEGRO_EVENT_MOUSE_BUTTON_UP ) {
+                if( event.mouse.button < MAX_BUTTONS )
+                    mouse.buttons[event.mouse.button] = false;
+                updateMouseText();
+                luaMouseEvent( "up", event.mouse.button );
+            }
+
+            if( event.type == ALLEGRO_EVENT_MOUSE_AXES || event.type == ALLEGRO_EVENT_MOUSE_WARPED ) {
+                luaMouseEvent( "move", event.mouse.button,
+                        event.mouse.x,
+                        event.mouse.y,
+                        event.mouse.z,
+                        event.mouse.dx,
+                        event.mouse.dy,
+                        event.mouse.dz
+                        );
+            }
+
+            if( event.type == ALLEGRO_EVENT_MOUSE_ENTER_DISPLAY ) {
+                luaMouseEvent( "enter", event.mouse.button,
+                        event.mouse.x,
+                        event.mouse.y,
+                        event.mouse.z
+                        );
+            }
+
+            if( event.type == ALLEGRO_EVENT_MOUSE_LEAVE_DISPLAY ) {
+                luaMouseEvent( "leave", event.mouse.button,
+                        event.mouse.x,
+                        event.mouse.y,
+                        event.mouse.z
+                        );
             }
         }
-
-        if( event.type == ALLEGRO_EVENT_MOUSE_BUTTON_DOWN ) {
-            if( event.mouse.button < MAX_BUTTONS )
-                mouse.buttons[event.mouse.button] = true;
-            updateMouseText();
-        }
-
-        if( event.type == ALLEGRO_EVENT_MOUSE_BUTTON_UP ) {
-            if( event.mouse.button < MAX_BUTTONS )
-                mouse.buttons[event.mouse.button] = false;
-            updateMouseText();
+        catch( LuaException &e )
+        {
+            std::cerr << e.what() << std::endl;
         }
 
         if( event.type == ALLEGRO_EVENT_DISPLAY_RESIZE )
@@ -276,7 +345,6 @@ void Game::run()
             console->render();
 
             al_flip_display();
-
         }
     }
 }
@@ -307,4 +375,14 @@ Game::~Game()
     }
     deregisterEventSources();
     destroyDisplay();
+}
+
+int Game::quit( lua_State *L )
+{
+    lua_getfield( L, LUA_REGISTRYINDEX, LUA_GAME_INDEX );
+    Game* self = static_cast<Game*>(lua_touserdata( L, -1 ));
+
+    self->shouldStop = true;
+
+    return 0;
 }
