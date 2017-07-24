@@ -9,6 +9,8 @@
 #include "font.h"
 #include "editstring.h"
 #include "luainterpreter.h"
+#include "LuaRef.h"
+#include "LuaException.h"
 
 #define CONSOLE_MAX_LINES 128
 #define CONSOLE_LINE_LENGTH 79
@@ -143,6 +145,12 @@ class Console : public Renderable
         if( event.keyboard.keycode == ALLEGRO_KEY_DOWN )
         {
             historyDown();
+            return true;
+        }
+
+        if( event.keyboard.keycode == ALLEGRO_KEY_TAB )
+        {
+            autoComplete();
             return true;
         }
 
@@ -320,6 +328,7 @@ class Console : public Renderable
         interpreter.insertLine( command.getText() );
         historyAdd( command.getText() );
         command.clear();
+        autoCompleteClear();
     }
 
     void historyUp()
@@ -357,6 +366,39 @@ class Console : public Renderable
             mHistory.pop_front();
         }
         mHistoryLine = mHistory.end();
+    }
+
+    void autoComplete()
+    {
+        ManualBind::LuaRef complete = ManualBind::LuaRef::getGlobal( mL, "autoComplete" );
+        if( complete.isFunction() )
+        {
+            try {
+                ManualBind::LuaRef result = complete( command.getText() );
+                result.push();
+
+                command.setText( ManualBind::LuaStack<std::string>::get( mL, -1 ) );
+            }
+            catch( ManualBind::LuaException &e )
+            {
+                std::cerr << e.what() << std::endl;
+            }
+        }
+    }
+
+    void autoCompleteClear()
+    {
+        ManualBind::LuaRef clearAuto = ManualBind::LuaRef::getGlobal( mL, "autoCompleteClear" );
+        if( clearAuto.isFunction() )
+        {
+            try {
+                clearAuto();
+            }
+            catch( ManualBind::LuaException &e )
+            {
+                std::cerr << e.what() << std::endl;
+            }
+        }
     }
 };
 
