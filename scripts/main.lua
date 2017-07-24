@@ -4,6 +4,7 @@ require( 'events' )
 require( 'misc' )
 require( 'sprite' )
 require( 'tasks' )
+require( 'autocomplete' )
 
 map_data = dozipfile( './data/map.lua.gz' )
 
