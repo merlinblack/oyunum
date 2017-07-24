@@ -1,41 +1,11 @@
 print 'Lua Script'
 package.path = './scripts/?.lua;' .. package.path
+require( 'events' )
+require( 'misc' )
 require( 'sprite' )
 require( 'tasks' )
+
 map_data = dozipfile( './data/map.lua.gz' )
-
-prev = 0
-
-function update( t )
-    if t - prev > 1 then
-        prev = t
-        hello.text, world.text = world.text, hello.text
-    end
-    tick( pulse, t )
-    tick( slide, t )
-    tick( animate, t )
-end
-
-function keyEvent( code, char )
-    print( code, char, utf8.char(char) )
-end
-
-function mouseEvent( what, button, x, y, z, dx, dy, dz )
-    if what ~= 'move' then
-        print( what, button, x, y, z, dx, dy, dz )
-    end
-end
-
-function clear()
-    console 'clear'
-end
-
-function tick( co, t )
-    ret, error = coroutine.resume( co, t )
-    if not ret and error ~= 'cannot resume dead coroutine' then 
-        print( error )
-    end
-end
 
 pulse = coroutine.create( function()
     while true do

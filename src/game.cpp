@@ -242,7 +242,7 @@ void Game::run()
                     }
                 }
 
-                luaKeyEvent( event.keyboard.keycode, event.keyboard.unichar );
+                luaKeyEvent( al_get_time(), event.keyboard.keycode, event.keyboard.unichar );
             }
 
             if( event.type == ALLEGRO_EVENT_TIMER && event.timer.source == frameTimer )
@@ -283,18 +283,18 @@ void Game::run()
                 if( event.mouse.button < MAX_BUTTONS )
                     mouse.buttons[event.mouse.button] = true;
                 updateMouseText();
-                luaMouseEvent( "down", event.mouse.button );
+                luaMouseEvent( al_get_time(), "down", event.mouse.button );
             }
 
             if( event.type == ALLEGRO_EVENT_MOUSE_BUTTON_UP ) {
                 if( event.mouse.button < MAX_BUTTONS )
                     mouse.buttons[event.mouse.button] = false;
                 updateMouseText();
-                luaMouseEvent( "up", event.mouse.button );
+                luaMouseEvent( al_get_time(), "up", event.mouse.button );
             }
 
             if( event.type == ALLEGRO_EVENT_MOUSE_AXES || event.type == ALLEGRO_EVENT_MOUSE_WARPED ) {
-                luaMouseEvent( "move", event.mouse.button,
+                luaMouseEvent( al_get_time(), "move", event.mouse.button,
                         event.mouse.x,
                         event.mouse.y,
                         event.mouse.z,
@@ -305,7 +305,7 @@ void Game::run()
             }
 
             if( event.type == ALLEGRO_EVENT_MOUSE_ENTER_DISPLAY ) {
-                luaMouseEvent( "enter", event.mouse.button,
+                luaMouseEvent( al_get_time(), "enter", event.mouse.button,
                         event.mouse.x,
                         event.mouse.y,
                         event.mouse.z
@@ -313,7 +313,7 @@ void Game::run()
             }
 
             if( event.type == ALLEGRO_EVENT_MOUSE_LEAVE_DISPLAY ) {
-                luaMouseEvent( "leave", event.mouse.button,
+                luaMouseEvent( al_get_time(), "leave", event.mouse.button,
                         event.mouse.x,
                         event.mouse.y,
                         event.mouse.z

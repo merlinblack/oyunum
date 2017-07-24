@@ -4,3 +4,11 @@ function wait( t )
         coroutine.yield()
     end
 end
+
+function tick( co, t )
+    ret, error = coroutine.resume( co, t )
+    if not ret and error ~= 'cannot resume dead coroutine' then 
+        print( error )
+    end
+end
+
