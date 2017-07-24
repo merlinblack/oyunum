@@ -14,7 +14,7 @@ update = coroutine.wrap( function( time )
         tick( pulse, time )
         tick( slide, time )
         tick( animate, time )
-        coroutine.yield();
+        time = coroutine.yield();
     end
 end)
 
