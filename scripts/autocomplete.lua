@@ -60,6 +60,13 @@ function getCompletions( str )
                 table.insert( ret, prefix .. dottype .. k )
             end
         end
+        if g.__luaclass then
+            for k, v in pairs( getLuaClassInfo( g ) ) do
+                if string.find( v, str ) == 1 then
+                    table.insert( ret, prefix .. dottype .. v )
+                end
+            end
+        end
     else
         -- Retrieve class info if any
         for k,v in pairs( getClassInfo( g ) ) do
@@ -109,3 +116,40 @@ function getIdenticalPrefixLength( tbl, start )
     end
     return l - 2
 end
+
+function getClassInfo( cls )
+    local ret = {}
+    local mt = getmetatable( cls )
+    if mt then
+        for k, v in pairs( mt ) do
+            if string.sub( k, 1, 1 ) ~= '_' then
+                table.insert( ret, k )
+            end
+        end
+        if mt.__properties then
+            for k, v in pairs( mt.__properties ) do
+                if string.sub( k, 1, 1 ) ~= '_' then
+                    table.insert( ret, k )
+                end
+            end
+        end
+    end
+
+    return ret
+end
+
+function getLuaClassInfo( cls )
+    local ret = {}
+    local mt = getmetatable( cls )
+    if mt then
+        if mt.__index then
+            for k, v in pairs( mt.__index ) do
+                if string.sub( k, 1, 1 ) ~= '_' then
+                    table.insert( ret, k )
+                end
+            end
+        end
+    end
+    return ret
+end
+
