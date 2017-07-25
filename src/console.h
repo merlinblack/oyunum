@@ -375,9 +375,8 @@ class Console : public Renderable
         {
             try {
                 ManualBind::LuaRef result = complete( command.getText() );
-                result.push();
 
-                command.setText( ManualBind::LuaStack<std::string>::get( mL, -1 ) );
+                command.setText( result );
             }
             catch( ManualBind::LuaException &e )
             {
