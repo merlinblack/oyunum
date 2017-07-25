@@ -227,6 +227,8 @@ class Console : public Renderable
         if( mLines.size() > CONSOLE_LINE_COUNT - 1 )
             mStartLine = std::max( (int)mLines.size() - CONSOLE_LINE_COUNT + 2, 0 );
 
+        al_ustr_free( unicode );
+
         return;
     }
 
@@ -370,7 +372,7 @@ class Console : public Renderable
 
     void autoComplete()
     {
-        ManualBind::LuaRef complete = ManualBind::LuaRef::getGlobal( mL, "autoComplete" );
+        ManualBind::LuaRef complete( mL, "autoComplete" );
         if( complete.isFunction() )
         {
             try {
@@ -387,7 +389,7 @@ class Console : public Renderable
 
     void autoCompleteClear()
     {
-        ManualBind::LuaRef clearAuto = ManualBind::LuaRef::getGlobal( mL, "autoCompleteClear" );
+        ManualBind::LuaRef clearAuto( mL, "autoCompleteClear" );
         if( clearAuto.isFunction() )
         {
             try {

@@ -168,9 +168,9 @@ void Game::run()
         return;
     }
 
-    LuaRef luaUpdate     = LuaRef::getGlobal( L, "update" );
-    LuaRef luaKeyEvent   = LuaRef::getGlobal( L, "keyEvent" );
-    LuaRef luaMouseEvent = LuaRef::getGlobal( L, "mouseEvent" );
+    LuaRef luaUpdate( L, "update" );
+    LuaRef luaKeyEvent( L, "keyEvent" );
+    LuaRef luaMouseEvent( L, "mouseEvent" );
 
     // Check scripts are sane.
     if( ! luaUpdate.isFunction() )
@@ -217,7 +217,7 @@ void Game::run()
                     {
                         // We grab it here, as 'quit' may change depending
                         // on what is happening.
-                        LuaRef quit = LuaRef::getGlobal( L, "quit" );
+                        LuaRef quit( L, "quit" );
                         if( quit.isFunction() ) {
                             quit();
                         }
