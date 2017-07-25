@@ -110,3 +110,6 @@ indy.y = 200
 renderlist:add( indy )
 
 print( 'Completed' );
+
+require'gui/test'
+t = DragButton( renderlist, 128,128 )
