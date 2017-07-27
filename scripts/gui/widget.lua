@@ -36,25 +36,43 @@ function Widget:intersects( x, y )
     return true
 end
 
-function Widget:mouseMoved( x, y, button )
+function Widget:mouseMoved( time, x, y, button )
     if self:intersects( x, y ) then
         for _,child in pairs(self.children) do
-            if child.mouseMoved then child:mouseMoved( x, y, button ) end
+            if child.mouseMoved then child:mouseMoved( time, x, y, button ) end
         end
     else
         self:lostMouse()
     end
 end
 
-function Widget:keypressed( key )
-    for _,child in pairs(self.children) do
-        if child.keypressed then child:keypressed( key ) end
+function Widget:mouseClick( time, x, y, button )
+    if self:intersects( x, y ) then
+        for _,child in pairs(self.children) do
+            if child.mouseMoved then child:mouseClick( time, x, y, button ) end
+        end
     end
 end
 
-function Widget:keyreleased( key )
+function Widget:mouseDown( time, x, y, button )
+    if self:intersects( x, y ) then
+        for _,child in pairs(self.children) do
+            if child.mouseMoved then child:mouseDown( time, x, y, button ) end
+        end
+    end
+end
+
+function Widget:mouseUp( time, x, y, button )
+    if self:intersects( x, y ) then
+        for _,child in pairs(self.children) do
+            if child.mouseMoved then child:mouseUp( time, x, y, button ) end
+        end
+    end
+end
+
+function Widget:keyPressed( keyCode, codepoint )
     for _,child in pairs(self.children) do
-        if child.keyreleased then child:keyreleased( key ) end
+        if child.keypressed then child:keypressed( keyCode, codepoint ) end
     end
 end
 

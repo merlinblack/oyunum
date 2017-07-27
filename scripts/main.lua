@@ -5,6 +5,7 @@ require( 'misc' )
 require( 'sprite' )
 require( 'tasks' )
 require( 'autocomplete' )
+require( 'gui/gui' )
 
 map_data = dozipfile( './data/map.lua.gz' )
 
@@ -50,7 +51,7 @@ animate = coroutine.create( function( time )
                 time = coroutine.yield()
             end
             prev = time
-            indy:setBitmap( indy_sprite:getframe( 'Run_' .. index ) )
+            indy:setBitmap( indy_sprite:getFrame( 'Run_' .. index ) )
         end
     end
 end )
@@ -109,7 +110,8 @@ indy.y = 200
 
 renderlist:add( indy )
 
-print( 'Completed' );
+require 'gui/test'
+gui:addChild( DragButton( gui.atlas, renderlist, 128, 250 ) )
+gui:addChild( DragButton( gui.atlas, renderlist, 200, 250 ) )
 
-require'gui/test'
-t = DragButton( renderlist, 128,128 )
+print( 'Completed' );

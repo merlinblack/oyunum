@@ -8,7 +8,7 @@ function Sprite:__init( file_base_name )
     self.frames = dozipfile( file_base_name .. '.lua.gz' )
 end
 
-function Sprite:getframe( name )
+function Sprite:getFrame( name )
     local f = self.frames[name]
     local b
 
