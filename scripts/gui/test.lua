@@ -2,13 +2,15 @@ require 'gui/widget'
 
 class 'DragButton' (Widget)
 
-function DragButton:__init( rl, x, y )
+function DragButton:__init( atlas, rl, x, y )
 
-    Widget.__init( self, x, y, 32, 32 )
+    Widget.__init( self, x, y, 48, 48 )
 
     self.state = "normal"
     self.oldstate = "normal"
-    self.bitmap = Bitmap( 'data/icon.tga' )
+    self.atlas = atlas
+    self.bitmap = Bitmap()
+    self.bitmap:setBitmap( self.atlas:getFrame( 'dragbutton_' .. self.state ) )
     self.bitmap.x = x
     self.bitmap.y = y
     self.rl = rl
@@ -32,37 +34,45 @@ function DragButton:move( x, y )
     self.bitmap.y = self.top
 end
 
-function DragButton:mouseMoved( x, y, button )
+function DragButton:mouseDown( time, x, y, button )
+    if button == 1 and self.state == "hover" then
+        self.state = "pressed"
+    end
+    return self:updateVisualState()
+end
+
+function DragButton:mouseUp( time, x, y, button )
+    if button == 1 and self.state == "pressed" then
+        self.state = "hover"
+    end
+    return self:updateVisualState()
+end
+
+function DragButton:mouseMoved( time, x, y, buttons )
+
+    -- Update possition BEFORE checking if we have lost the mouse
+    if self.state == "pressed" then
+        self:move( info.mouseAxes.dx, info.mouseAxes.dy )
+    end
+
+    Widget.mouseMoved( self, time, x, y, buttons )
+
     if self:intersects( x, y ) then
-        if button == 0 and self.state == "click" then -- click release
-            self.state = "hover"
-        end
         if self.state == "normal" then
             self.state = "hover"
-        end
-        if self.state == "click" then
-            self:move( x, y )
         end
     else
         self.state = "normal"
     end
-    if self.state == "hover" and button == 1 then
-        self.state = "click"
-    end
 
-    self:updateVisualState()
+    return self:updateVisualState()
 end
 
 function DragButton:updateVisualState()
     if self.state ~= self.oldstate then
-        if self.state == "normal" then
-            print( 'NORMAL' )
-        elseif self.state == "hover" then
-            print( 'HOVER' )
-        else
-            print( 'PRESSED' )
-        end
+        self.bitmap:setBitmap( self.atlas:getFrame( 'dragbutton_' .. self.state ) )
         self.oldstate = self.state
+        return true -- state has changed
     end
 end
 
@@ -70,7 +80,5 @@ function DragButton:lostMouse()
     self.state = "normal"
     self:updateVisualState()
 
-    for _,child in pairs( self.children ) do
-        if child.lostMouse then child:lostMouse() end
-    end
+    Widget.lostMouse(self)
 end
