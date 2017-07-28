@@ -25,7 +25,6 @@ bool Game::createDisplay()
     if( display == nullptr )
         return false;
     al_set_window_title( display, "My Game" );
-    al_set_new_bitmap_flags(ALLEGRO_MIN_LINEAR | ALLEGRO_MAG_LINEAR);
 
     resize();
 
@@ -39,6 +38,9 @@ void Game::resize()
 
     float sx = width / (float)SCREEN_W;
     float sy = height / (float)SCREEN_H;
+
+    mouseScaleX = sx;
+    mouseScaleY = sy;
 
     ALLEGRO_TRANSFORM trans;
     al_identity_transform(&trans);
@@ -295,8 +297,8 @@ void Game::run()
 
             if( event.type == ALLEGRO_EVENT_MOUSE_AXES || event.type == ALLEGRO_EVENT_MOUSE_WARPED ) {
                 luaMouseEvent( al_get_time(), "move", event.mouse.button,
-                        event.mouse.x,
-                        event.mouse.y,
+                        event.mouse.x / mouseScaleX,
+                        event.mouse.y / mouseScaleY,
                         event.mouse.z,
                         event.mouse.dx,
                         event.mouse.dy,
@@ -306,16 +308,16 @@ void Game::run()
 
             if( event.type == ALLEGRO_EVENT_MOUSE_ENTER_DISPLAY ) {
                 luaMouseEvent( al_get_time(), "enter", event.mouse.button,
-                        event.mouse.x,
-                        event.mouse.y,
+                        event.mouse.x / mouseScaleX,
+                        event.mouse.y / mouseScaleY,
                         event.mouse.z
                         );
             }
 
             if( event.type == ALLEGRO_EVENT_MOUSE_LEAVE_DISPLAY ) {
                 luaMouseEvent( al_get_time(), "leave", event.mouse.button,
-                        event.mouse.x,
-                        event.mouse.y,
+                        event.mouse.x / mouseScaleX,
+                        event.mouse.y / mouseScaleY,
                         event.mouse.z
                         );
             }
