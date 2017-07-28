@@ -104,8 +104,6 @@ LuaInterpreter::State LuaInterpreter::insertLine( std::string line  )
             {
                 lua_pushstring( thread, "Error: " );
                 lua_replace( thread, 1 );
-                // Adjust the 'extra' error info off the stack.
-                lua_settop( thread, 3 );
             }
             // else leave it alone.
 
