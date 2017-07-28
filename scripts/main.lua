@@ -114,4 +114,7 @@ require 'gui/test'
 gui:addChild( DragButton( gui.atlas, renderlist, 128, 250 ) )
 gui:addChild( DragButton( gui.atlas, renderlist, 200, 250 ) )
 
+require 'gui/button'
+gui:addChild( Button( gui.atlas, renderlist, 16, 400, 100 ) )
+
 print( 'Completed' );
