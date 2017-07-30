@@ -64,7 +64,7 @@ class Game
     } mouse;
 
     int width, height;
-    float mouseScaleX, mouseScaleY;
+    float scaleX, scaleY;
 
     lua_State* L;
 
