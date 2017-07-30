@@ -36,15 +36,16 @@ void Game::resize()
     width = al_get_display_width( display );
     height = al_get_display_height( display );
 
-    float sx = width / (float)SCREEN_W;
-    float sy = height / (float)SCREEN_H;
+    scaleX = width / (float)SCREEN_W;
+    scaleY = height / (float)SCREEN_H;
 
-    mouseScaleX = sx;
-    mouseScaleY = sy;
+    cout << "X scale: " << scaleX << endl;
+    cout << "Y scale: " << scaleY << endl;
+    cout << endl;
 
     ALLEGRO_TRANSFORM trans;
     al_identity_transform(&trans);
-    al_scale_transform(&trans, sx, sy);
+    al_scale_transform(&trans, scaleX, scaleY);
     al_use_transform(&trans);
 }
 
@@ -297,27 +298,27 @@ void Game::run()
 
             if( event.type == ALLEGRO_EVENT_MOUSE_AXES || event.type == ALLEGRO_EVENT_MOUSE_WARPED ) {
                 luaMouseEvent( al_get_time(), "move", event.mouse.button,
-                        event.mouse.x / mouseScaleX,
-                        event.mouse.y / mouseScaleY,
+                        event.mouse.x / scaleX,
+                        event.mouse.y / scaleY,
                         event.mouse.z,
-                        event.mouse.dx,
-                        event.mouse.dy,
+                        event.mouse.dx / scaleX,
+                        event.mouse.dy / scaleY,
                         event.mouse.dz
                         );
             }
 
             if( event.type == ALLEGRO_EVENT_MOUSE_ENTER_DISPLAY ) {
                 luaMouseEvent( al_get_time(), "enter", event.mouse.button,
-                        event.mouse.x / mouseScaleX,
-                        event.mouse.y / mouseScaleY,
+                        event.mouse.x / scaleX,
+                        event.mouse.y / scaleY,
                         event.mouse.z
                         );
             }
 
             if( event.type == ALLEGRO_EVENT_MOUSE_LEAVE_DISPLAY ) {
                 luaMouseEvent( al_get_time(), "leave", event.mouse.button,
-                        event.mouse.x / mouseScaleX,
-                        event.mouse.y / mouseScaleY,
+                        event.mouse.x / scaleX,
+                        event.mouse.y / scaleY,
                         event.mouse.z
                         );
             }

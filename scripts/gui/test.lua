@@ -30,8 +30,9 @@ function DragButton:move( x, y )
         return true
     end
 
-    self.bitmap.x = self.left
-    self.bitmap.y = self.top
+    -- Needs to be an integer...
+    self.bitmap.x = math.floor(self.left)
+    self.bitmap.y = math.floor(self.top)
 end
 
 function DragButton:mouseDown( time, x, y, button )

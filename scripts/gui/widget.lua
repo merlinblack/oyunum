@@ -38,11 +38,14 @@ end
 
 function Widget:mouseMoved( time, x, y, button )
     if self:intersects( x, y ) then
+        self.hasMouse = true
         for _,child in pairs(self.children) do
             if child.mouseMoved then child:mouseMoved( time, x, y, button ) end
         end
     else
-        self:lostMouse()
+        if self.hasMouse then
+            self:lostMouse()
+        end
     end
 end
 
@@ -101,6 +104,7 @@ function Widget:move( x, y )
 end
 
 function Widget:lostMouse()
+    self.hasMouse = false
     for _,child in pairs( self.children ) do
         if child.lostMouse then child:lostMouse() end
     end
