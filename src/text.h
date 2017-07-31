@@ -39,6 +39,12 @@ class Text : public Renderable
         mColor = color;
     }
 
+    void setXY( int x, int y )
+    {
+        mX = x;
+        mY = y;
+    }
+
     ALLEGRO_COLOR getColor()
     {
         return mColor;

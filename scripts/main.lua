@@ -115,6 +115,10 @@ gui:addChild( DragButton( gui.atlas, renderlist, 128, 250 ) )
 gui:addChild( DragButton( gui.atlas, renderlist, 200, 250 ) )
 
 require 'gui/button'
-gui:addChild( Button( gui.atlas, renderlist, 16, 400, 100 ) )
+btn_console = Button( gui.atlas, renderlist, 16, 400, 96, "Console" )
+function btn_console:action()
+    console('toggle')
+end
+gui:addChild( btn_console )
 
 print( 'Completed' );
