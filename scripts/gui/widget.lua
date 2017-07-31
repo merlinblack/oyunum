@@ -52,7 +52,12 @@ end
 function Widget:mouseClick( time, x, y, button )
     if self:intersects( x, y ) then
         for _,child in pairs(self.children) do
-            if child.mouseMoved then child:mouseClick( time, x, y, button ) end
+            if child.mouseMoved then
+                local handled = child:mouseClick( time, x, y, button )
+                if handled then
+                    return true
+                end
+            end
         end
     end
 end

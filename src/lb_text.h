@@ -17,6 +17,7 @@ struct TextBinding : public Binding<TextBinding,Text>
     {
         static luaL_Reg members[] = {
             { "__upcast", upcast },
+            { "setXY", setXY },
             { nullptr, nullptr }
         };
         return members;
@@ -85,6 +86,16 @@ struct TextBinding : public Binding<TextBinding,Text>
         return 0;
     }
 
+    static int setXY( lua_State* L )
+    {
+        TextPtr t = fromStack( L, 1 );
+        int x = luaL_checkinteger( L, 2 );
+        int y = luaL_checkinteger( L, 3 );
+
+        t->setXY( x, y );
+
+        return 0;
+    }
 
     int static upcast( lua_State* L )
     {
