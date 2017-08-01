@@ -102,4 +102,11 @@ function btn_console:action()
 end
 gui:addChild( btn_console )
 
+function convertToQuit()
+    btn_console.text.text = 'Çikiş'
+    function btn_console:action()
+        quit()
+    end
+end
+
 print( 'Completed' );
