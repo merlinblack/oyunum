@@ -24,10 +24,7 @@ struct TileSetBinding : public Binding<TileSetBinding,TileSet>
 
     static bind_properties* properties()
     {
-        static bind_properties properties[] = {
-            { nullptr, nullptr, nullptr }
-        };
-        return properties;
+        return nullptr;
     }
 
     static int create( lua_State* L )
