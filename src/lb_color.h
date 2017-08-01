@@ -12,10 +12,7 @@ struct ColorBinding : public PODBinding<ColorBinding,ALLEGRO_COLOR>
 
     static luaL_Reg* members()
     {
-        static luaL_Reg members[] = {
-            { nullptr, nullptr }
-        };
-        return members;
+        return nullptr;
     }
 
     static bind_properties* properties()
