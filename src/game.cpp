@@ -117,7 +117,8 @@ bool Game::boot()
 
     console = std::make_shared<Console>( L, console_font, SCREEN_W );
     console->setOrder(255);
-    console->print( std::string(  "Está es una prueba\nTeşekker edirim\nOne\t1\nTwo\t2\nÜç\t3\nDört\t4" ) );
+    console->print( std::string( "Está es una prueba\nTeşekker edirim\nOne\t1\nTwo\t2\nÜç\t3\nDört\t4" ) );
+    console->print( std::string( GIT_REPO_VERSION_STR ));
 
     redraw = true;
 
