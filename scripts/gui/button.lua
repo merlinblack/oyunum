@@ -28,8 +28,8 @@ function Button:__init( atlas, rl, x, y, w, caption )
         self.bitmaps[i].y = y
         rl:add( self.bitmaps[i] )
     end
-    self.text = Text( caption, Button.font, Button.colors.normal, x + w / 2, y + 8 )
-    rl:add( self.text )
+    self.caption = Text( caption, Button.font, Button.colors.normal, x + w / 2, y + 8 )
+    rl:add( self.caption )
     self.rl = rl
 
     self:updateVisualState()
@@ -40,7 +40,7 @@ function Button:destroy()
     for i = 1, self.nBitmaps do
         self.rl:remove( self.bitmaps[i] )
     end
-    self.rl:remove( self.text )
+    self.rl:remove( self.caption )
 
     Widget:destroy(self)
 end
@@ -51,9 +51,12 @@ function Button:move( x, y )
     end
 
     for i = 1, self.nBitmaps do
-        self.bitmaps[i].x = self.left
+        self.bitmaps[i].x = self.left + ( i * 16 ) - 16
         self.bitmaps[i].y = self.top
     end
+
+    self.caption:setXY( self.left + self.width / 2, self.top + 8 )
+
 end
 
 function Button:mouseClick( time, x, y, button )
@@ -104,13 +107,13 @@ function Button:updateVisualState()
         end
         self.bitmaps[self.nBitmaps]:setBitmap( self.atlas:getFrame( 'btn_right_' .. self.state ) )
 
-        self.text.color = Button.colors[self.state]
+        self.caption.color = Button.colors[self.state]
         if self.oldstate == 'pressed' then
-            self.text:setXY( self.left + self.width / 2, self.top + 8 )
+            self.caption:setXY( self.left + self.width / 2, self.top + 8 )
         end
 
         if self.state == 'pressed' then
-            self.text:setXY( self.left + self.width / 2 + 2, self.top + 10 )
+            self.caption:setXY( self.left + self.width / 2 + 2, self.top + 10 )
         end
 
         self.oldstate = self.state
