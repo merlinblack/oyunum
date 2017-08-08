@@ -103,6 +103,28 @@ int draw_colored_text( const ALLEGRO_FONT* font, ALLEGRO_COLOR start_color, floa
     return width;
 }
 
+std::string strip_color_text( const std::string& text )
+{
+    std::string result;
+    bool color_mode = false;
+
+    for( const auto& i : text )
+    {
+        if( i == '^' )
+        {
+            color_mode = ! color_mode;
+        } else {
+            if( !color_mode )
+            {
+                result.push_back( i );
+            }
+        }
+    }
+
+    return result;
+}
+
+
 void test_colored_text( ALLEGRO_FONT* font )
 {
     ALLEGRO_COLOR color = al_map_rgb( 255, 255, 255 );

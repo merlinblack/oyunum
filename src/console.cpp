@@ -140,7 +140,7 @@ void Console::addLine( const std::string& line )
 
     mLines.push_back( line );
 
-    cout << line << endl;
+    cout << strip_color_text( line ) << endl;
 }
 
 void Console::print( const std::string& text )
