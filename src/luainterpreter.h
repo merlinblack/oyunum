@@ -15,8 +15,8 @@
 #include <string>
 #include <vector>
 
-#define LI_PROMPT  "Lua> "
-#define LI_PROMPT2 "Lua>> "
+#define LI_PROMPT  "^lightgreen^Lua>^!^ "
+#define LI_PROMPT2 "^lightgreen^Lua>>^!^ "
 
 static const std::string dumpstack_str(lua_State* L );
 static void dumpstack (lua_State *L, const char *message);

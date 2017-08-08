@@ -5,12 +5,14 @@
 #include <string>
 #include <list>
 #include <memory>
+#include <allegro5/allegro_primitives.h>
 #include "renderlist.h"
 #include "font.h"
 #include "editstring.h"
 #include "luainterpreter.h"
 #include "LuaRef.h"
 #include "LuaException.h"
+#include "colortext.h"
 
 #define CONSOLE_MAX_LINES 128
 #define CONSOLE_LINE_LENGTH 79
@@ -263,6 +265,8 @@ class Console : public Renderable
         }
 
         self->print( output );
+
+        return 0;
     }
 
     void render()
@@ -281,19 +285,17 @@ class Console : public Renderable
         {
             if( line_no >= mStartLine && y < (CONSOLE_LINE_COUNT-1)*16 )
             {
-                al_draw_text( mFont->get(), color, 5, y, ALLEGRO_ALIGN_LEFT, line.c_str() );
+                draw_colored_text( mFont->get(), color, 5, y, ALLEGRO_ALIGN_LEFT, line.c_str() );
                 y += 16;
             }
             line_no++;
         }
 
         std::string prompt = interpreter.getPrompt();
-        std::stringstream ss;
 
-        ss << prompt;
-        ss << command.getText();
+        int prompt_width = draw_colored_text( mFont->get(), color, 5, y, ALLEGRO_ALIGN_LEFT, prompt.c_str() );
 
-        al_draw_text( mFont->get(), color, 5, y, ALLEGRO_ALIGN_LEFT, ss.str().c_str() );
+        al_draw_text( mFont->get(), color, 5 + prompt_width, y, ALLEGRO_ALIGN_LEFT, command.getText().c_str() );
 
         double t = al_get_time();
         if( t - cursorBlinkTime > 0.7 )
@@ -305,7 +307,7 @@ class Console : public Renderable
         if( cursorBlink )
         {
             int charwidth = al_get_text_width( mFont->get(), "X" );
-            int x = charwidth * ( command.getPosition() + prompt.length());
+            int x = charwidth * command.getPosition() + prompt_width;
             int ys = y + 1;
             if( !command.isOverwriting() ) {
                 ys += 14;
