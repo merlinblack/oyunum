@@ -8,7 +8,7 @@ set( CMAKE_EXPORT_COMPILE_COMMANDS ON )
 set(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} ${PROJECT_SOURCE_DIR}/cmake)
 
 add_subdirectory(lua)
-find_package( allegro 5.0 COMPONENTS main image font ttf primitives )
+find_package( allegro 5.0 COMPONENTS main image font color ttf primitives )
 
 file(GLOB SRCS src/*.cpp manualbind/src/*.cpp)
 file(GLOB HDRS src/*.h manualbind/src/*.h)
