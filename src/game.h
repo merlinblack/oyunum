@@ -26,8 +26,6 @@
 #include "lb_font.h"
 #include "lb_color.h"
 
-#define MAX_BUTTONS 4
-
 // 16:9
 //#define SCREEN_W    640 
 //#define SCREEN_H    360
@@ -57,11 +55,6 @@ class Game
     ConsolePtr console;
 
     bool redraw;
-    struct {
-        bool buttons[MAX_BUTTONS+1];
-        int x, y, z, w;
-        int dx, dy, dz, dw;
-    } mouse;
 
     int width, height;
     float scaleX, scaleY;
@@ -74,8 +67,6 @@ class Game
 
     Game() : display(nullptr), frameTimer(nullptr), eventQueue(nullptr), redraw(false), L(nullptr), shouldStop(false)
     {
-        for(int i=1; i < MAX_BUTTONS; i++ )
-            mouse.buttons[i] = false;
     }
 
     void initialiseAllegro();

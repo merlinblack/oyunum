@@ -40,6 +40,9 @@ class TileSet
     ALLEGRO_BITMAP* getTile( int tileId );
 
     int getFirstTileID() { return firstTileId; }
+    int getTileWidth() { return tileWidth; }
+    int getTileHeight() { return tileHeight; }
+
 };
 
 using TileSetPtr = std::shared_ptr<TileSet>;
