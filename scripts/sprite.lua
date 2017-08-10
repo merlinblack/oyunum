@@ -9,6 +9,10 @@ function Sprite:__init( file_base_name )
 end
 
 function Sprite:getFrame( name )
+    if not self.frames then
+        print( 'Could not get frame ' .. name .. '. No frame table.' )
+    end
+
     local f = self.frames[name]
     local b
 

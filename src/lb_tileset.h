@@ -30,8 +30,8 @@ struct TileSetBinding : public Binding<TileSetBinding,TileSet>
     static int create( lua_State* L )
     {
         int first = luaL_optinteger( L, 1, 1 );
-        int width = luaL_optinteger( L, 1, 32 );
-        int height = luaL_optinteger( L, 1, 32 );
+        int width = luaL_optinteger( L, 2, 32 );
+        int height = luaL_optinteger( L, 3, 32 );
 
         TileSetPtr ts = std::make_shared<TileSet>( first, width, height );
 

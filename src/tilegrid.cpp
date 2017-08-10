@@ -5,13 +5,15 @@ void TileGrid::render()
     int x = dx;
     int y = dy;
     int column = 0;
+    int tw = tileSet->getTileWidth();
+    int th = tileSet->getTileHeight();
 
     al_hold_bitmap_drawing( true );
 
     for( auto const tile : data ) {
         if( column >= width ) {
             column = 0;
-            y += 32;
+            y += th;
             x = dx;
         }
         if( tile != 0 ) {
@@ -22,7 +24,7 @@ void TileGrid::render()
             );
         }
         column++;
-        x += 32;
+        x += tw;
     }
 
     al_hold_bitmap_drawing( false );

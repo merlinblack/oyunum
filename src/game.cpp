@@ -135,7 +135,6 @@ void Game::setScene()
 
     rl->add( make_shared<Rectangle>( 4, 4,  100, 30, 8, 8, al_map_rgba(58,68,115,200)));
     rl->add( make_shared<Rectangle>( 4, 34, 100, 60, 8, 8, al_map_rgba(58,68,15,200)));
-    rl->add( make_shared<Rectangle>( 4, 64, 120, 90, 8, 8, al_map_rgba(58,28,75,200)));
 
     fpsText = make_shared<Text>( font, al_map_rgb( 255, 255, 255 ), 54, 8 );
     rl->add( fpsText );
@@ -143,27 +142,9 @@ void Game::setScene()
     spsText = make_shared<Text>( font, al_map_rgb( 255, 255, 255 ), 54, 38 );
     rl->add( spsText );
 
-    mouseText = make_shared<Text>( font, al_map_rgb( 255, 255, 255 ), 61, 68 );
-    rl->add( mouseText );
-
     rl->setOrder( 254 );
 
     renderlist->insert( std::move(rl) );
-
-    updateMouseText();
-}
-
-void Game::updateMouseText()
-{
-    char mouseStr[MAX_BUTTONS+1];
-
-    for( int i=1; i < MAX_BUTTONS; i++ )
-        mouseStr[i-1] = mouse.buttons[i] ? '^' : '_';
-
-    mouseStr[MAX_BUTTONS-1] = 0;
-
-    mouseText->clearText();
-    mouseText << "Mouse: [" << mouseStr << "]";
 }
 
 void Game::run()
@@ -286,16 +267,10 @@ void Game::run()
             }
 
             if( event.type == ALLEGRO_EVENT_MOUSE_BUTTON_DOWN ) {
-                if( event.mouse.button < MAX_BUTTONS )
-                    mouse.buttons[event.mouse.button] = true;
-                updateMouseText();
                 luaMouseEvent( al_get_time(), "down", event.mouse.button );
             }
 
             if( event.type == ALLEGRO_EVENT_MOUSE_BUTTON_UP ) {
-                if( event.mouse.button < MAX_BUTTONS )
-                    mouse.buttons[event.mouse.button] = false;
-                updateMouseText();
                 luaMouseEvent( al_get_time(), "up", event.mouse.button );
             }
 
