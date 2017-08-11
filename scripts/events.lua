@@ -5,16 +5,13 @@ info.mouseButtons = {}
 info.mouseButton = 0
 info.mouseAxes = {}
 
+tasks = {}
+
 update = coroutine.wrap( function( time )
-    local prev = 0
     while( true ) do
-        if time - prev > 1 then
-            prev = time
-            hello.text, world.text = world.text, hello.text
+        for k,v in pairs( tasks ) do
+            tick( v, time )
         end
-        tick( pulse, time )
-        tick( slide, time )
-        tick( animate, time )
         time = coroutine.yield();
     end
 end)
