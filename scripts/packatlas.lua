@@ -1,183 +1,118 @@
---[[
+require 'class'
 
-packatlas.lua
--------------
+class 'packatlas'
 
-Uses ImageMagik command line utilities to compose an atlas image.
-
-Copyright (c) 2010 Nigel Atkinson
-
-Permission is hereby granted, free of charge, to any person obtaining a copy
-of this software and associated documentation files (the "Software"), to deal
-in the Software without restriction, including without limitation the rights
-to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
-copies of the Software, and to permit persons to whom the Software is
-furnished to do so, subject to the following conditions:
-
-The above copyright notice and this permission notice shall be included in
-all copies or substantial portions of the Software.
-
-THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
-IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
-FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
-AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
-LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
-OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
-THE SOFTWARE.
-
-]]--
-
-if not table.foreach then
-  table.foreach = function(t, f)
-    for k, v in pairs(t) do f(k, v) end
-  end
+function packatlas:__init( directory, outputdir, name, width, height, scaling, padding )
+    self.directory = directory .. '/'
+    self.outputdir = outputdir .. '/'
+    self.filename = name
+    self.scaling = scaling
+    self.padding = padding
+    self.bitmaps = {}
+    self.placed = {}
+    self.names = {}
+    self.composite = Bitmap()
+    self.composite:create( width, height )
 end
 
-images={}
-placed={}
+function packatlas:process()
 
-scaling = scaling or 100
-padding = padding or 0
+    self:loadImages()
 
-function getSize( filename )
-    local p = io.popen( 'identify -format \'%w %h\' ' .. filename )
-    local ret = p:read('*a')
-    p:close()
-    local split = string.find( ret, ' ' )
-    return string.sub( ret, 1, split-1 ) + 0, string.sub( ret, split+1 ) + 0
+    self:sortImages()
+    
+    self:placeImages()
+    
+    self:saveComposite()
+    
+    self:writeFrameTable()
+
+    self:compressFramwTable()
+
 end
 
-function getFiles( listfile )
-    for file in io.lines( listfile ) do
-        local image = { x = 0, y = 0, image = file }
-        image.w, image.h = getSize( file )
-        image.w = image.w * scaling // 100
-        image.h = image.h * scaling // 100
-        table.insert( images, image )
+function packatlas:loadImages()
+    for file in io.lines( self.directory .. 'imagelist.txt' ) do
+        print( '^yellow^Loading:^!^', file )
+        bitmap = Bitmap( self.directory .. file )
+        self.names[bitmap] = file
+        table.insert( self.bitmaps, bitmap )
     end
 end
 
-function imageArea( image )
-    return image.w * image.h
+function packatlas:sortImages()
+    table.sort( self.bitmaps, function( a, b ) return a.h > b.h end )
 end
 
-function compare( a, b )
-    return a.h > b.h
-    --return imageArea(a) > imageArea(b)
+function packatlas:placeImages()
+    local canvas = {}
+    canvas.x = 0
+    canvas.y = 0
+    canvas.w = self.composite.w;
+    canvas.h = self.composite.h;
+
+    self:fillcanvas( canvas )
 end
 
-function placeImage( index, x, y )
-    local image = images[index]
+function packatlas:fillcanvas( canvas )
 
-    image.x = x
-    image.y = y
-
-    table.insert( placed, image )
-    table.remove( images, index )
-end
-
-function fits( canvas, image )
-    --print( 'Check fit:', image.w, image.h, canvas.w, canvas.h )
-    if image.w + padding <= canvas.w and image.h + padding <= canvas.h then
-        --print 'Yes'
-        return true
-    end
-    --print 'No'
-    return false
-end
-
-function showlists()
-    print()
-    print 'Remaining List'
-    table.foreach( images, function( i, v ) print( v.x, v.y, v.w, v.h, v.image ) end ) 
-    print()
-    print 'Placed List'
-    table.foreach( placed, function( i, v ) print( v.x, v.y, v.w, v.h, v.image ) end ) 
-    print()
-end
-
-function fillcanvas( canvas )
-    -- Find the bigest image that will fit and place it.
-    -- Divide leftover space and call recursively.
-    --
-    if #images == 0 then return end -- no images left to fit
+    if #self.bitmaps == 0 then return end -- no bitmaps left to place
     if canvas.w <= 0 then return end
     if canvas.h <= 0 then return end
 
-    --print( 'Canvas ', canvas.x, canvas.y, canvas.w, canvas.h )
-    for i, v in ipairs( images ) do
-        if fits( canvas, v ) then
-            --print( 'Placing image', v.image, 'at', canvas.x, canvas.y )
-            placeImage( i, canvas.x, canvas.y )
+    for index, bitmap in ipairs( self.bitmaps ) do
+        if self:fits( canvas, bitmap ) then
+            
+            print( '^yellow^Placing image:^!^', self.names[bitmap] )
+            self.composite:blit( bitmap, canvas.x, canvas.y, self.scaling )
+            
+            table.remove( self.bitmaps, index )
+
+            bitmap.x = canvas.x
+            bitmap.y = canvas.y
+            table.insert( self.placed, bitmap )
+
             -- Horizontal
-            local subcanvas = { x = canvas.x + v.w + padding, y = canvas.y, w = canvas.w - v.w - padding, h = v.h + padding } 
-            fillcanvas( subcanvas )
+            local subcanvas = { x = canvas.x + bitmap.w + self.padding, y = canvas.y, w = canvas.w - bitmap.w - self.padding, h = bitmap.h + self.padding } 
+            self:fillcanvas( subcanvas )
             -- Vertical
-            local subcanvas = { x = canvas.x, y = canvas.y + v.h + padding, w = canvas.w, h = canvas.h - v.h - padding }
-            fillcanvas( subcanvas )
+            local subcanvas = { x = canvas.x, y = canvas.y + bitmap.h + self.padding, w = canvas.w, h = canvas.h - bitmap.h - self.padding }
+            self:fillcanvas( subcanvas )
 
             return
         end
     end
 end
 
-function compositePlacedImage( image, gorillaFile )
-
-    print( 'Compositing image from ' .. image.image )
-
-    local cmd, desc, from
-
-    if scaling ~= 100 then
-        cmd = 'convert ' .. image.image .. ' -resize ' .. scaling .. '% temp.png'
-        os.execute( cmd )
-        from = 'temp.png'
-    else
-        from = image.image
+function packatlas:fits( canvas, image )
+    if image.w + self.padding <= canvas.w and image.h + self.padding <= canvas.h then
+        return true
     end
-
-    cmd = 'composite -geometry +' .. image.x .. '+' .. image.y ..' ' .. from
-    cmd = cmd .. ' ' .. compositeFile .. '.png ' .. compositeFile .. '.png'
-    os.execute( cmd )
-    
-    desc = string.sub( image.image, 1, string.find( image.image, '.png' )-1 )
-    desc = desc:gsub( '-', '_')
-    desc = desc .. ' = { x = ' .. image.x .. ', y = ' .. image.y
-    desc = desc .. ', w = ' .. image.w .. ', h = ' .. image.h .. ' },'
-    gorillaFile:write( desc .. '\n' )
+    return false
 end
 
-function processPlacedImages()
-    cmd = 'convert -size ' .. canvas.w .. 'x' .. canvas.h .. ' xc:none ' .. compositeFile .. '.png'
-    print( cmd )
-    os.execute( cmd )
-    local gorillaFile = io.open( compositeFile .. '.lua', 'w+' )
-
-    gorillaFile:write( 'return {\n' )
-
-    table.foreach( placed, function(k, v) compositePlacedImage( v, gorillaFile ) end )
-    
-    gorillaFile:write( '}\n' )
-    
-    gorillaFile:close()
-
-    if scaling ~= 100 then
-        os.execute( 'rm temp.png' )
+function packatlas:saveComposite()
+    self.composite:saveBitmap( self.outputdir .. self.filename .. '.png' )
+end
+   
+function packatlas:writeFrameTable()
+    local frameTable = io.open( self.outputdir .. self.filename .. '.lua', 'w+' )
+    frameTable:write( 'return {\n' )
+    for _, bitmap in ipairs( self.placed ) do
+        local name = self.names[bitmap]
+        local desc = string.sub( name, 1, string.find( name, '.png' )-1 )
+        desc = desc:gsub( '-', '_')
+        desc = desc .. ' = { x = ' .. bitmap.x .. ', y = ' .. bitmap.y
+        desc = desc .. ', w = ' .. bitmap.w .. ', h = ' .. bitmap.h .. ' },'
+        frameTable:write( desc .. '\n' )
     end
+    frameTable:write('}\n')
+    frameTable:close()
 end
 
-function makeAtlas()
-    getFiles( 'imagelist.txt' )
+function packatlas:compressFramwTable()
+    local filename = self.outputdir .. self.filename .. '.lua'
 
-    table.sort( images, compare )
-
-    fillcanvas( canvas )
-    showlists()
-
-    if #images ~= 0 then
-        print( 'Failed to fit all images.' )
-        processPlacedImages()
-    else
-        print( 'Fited all images within a canvas of ' .. canvas.w ..'x'..canvas.h )
-        processPlacedImages()
-    end
+    os.execute( 'rm -f ' .. filename .. '.gz' )
+    os.execute( 'gzip ' .. filename )
 end
