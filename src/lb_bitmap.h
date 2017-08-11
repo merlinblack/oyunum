@@ -31,6 +31,8 @@ struct BitmapBinding : public Binding<BitmapBinding,Bitmap>
         static bind_properties properties[] = {
             { "x", get_xy, set_xy },
             { "y", get_xy, set_xy },
+            { "w", get_wh, nullptr },
+            { "h", get_wh, nullptr },
             { "scale", get_scale, set_scale },
             { nullptr, nullptr, nullptr }
         };
@@ -194,6 +196,27 @@ struct BitmapBinding : public Binding<BitmapBinding,Bitmap>
         b->setScale( scale );
 
         return 0;
+    }
+
+    static int get_wh( lua_State* L )
+    {
+        static const char* keys[] = { "w", "h", nullptr };
+
+        BitmapPtr b = fromStack( L, 1 );
+
+        int which = luaL_checkoption( L, 2, nullptr, keys ); 
+
+        switch( which )
+        {
+            case 0:
+                lua_pushnumber( L, b->getWidth() );
+                break;
+            case 1:
+                lua_pushnumber( L, b->getHeight() );
+                break;
+        }
+
+        return 1;
     }
 
 };

@@ -4,8 +4,8 @@ void Bitmap::render()
 {
     if( bitmap != nullptr )
     {
-        w = al_get_bitmap_width( bitmap );
-        h = al_get_bitmap_height( bitmap );
+        int w = al_get_bitmap_width( bitmap );
+        int h = al_get_bitmap_height( bitmap );
         al_draw_scaled_bitmap( bitmap, 0, 0, w, h, x, y, scale * w, scale * h, 0 );
     }
 }

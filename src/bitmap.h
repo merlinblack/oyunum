@@ -15,7 +15,6 @@ class Bitmap : public Renderable
     ALLEGRO_BITMAP* bitmap;
     int x, y;
     float scale;
-    int w, h;
 
     public:
 
@@ -40,6 +39,9 @@ class Bitmap : public Renderable
     
     void setX( int _x ) { x = _x; }
     void setY( int _y ) { y = _y; }
+    
+    int getWidth() { return al_get_bitmap_width( bitmap ); }
+    int getHeight() { return al_get_bitmap_height( bitmap ); }
 
     void setScale( float _scale ) { scale = _scale; }
 
