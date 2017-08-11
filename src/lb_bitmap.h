@@ -3,6 +3,7 @@
 
 #include "bitmap.h"
 #include "LuaBinding.h"
+#include "lb_renderlist.h"
 
 using namespace ManualBind;
 
@@ -13,9 +14,12 @@ struct BitmapBinding : public Binding<BitmapBinding,Bitmap>
     static luaL_Reg* members()
     {
         static luaL_Reg members[] = {
+            { "create", createNew },
+            { "blit", blit },
             { "loadFile", loadFile },
             { "getSubBitmap", getSubBitmap },
             { "setBitmap", setBitmap },
+            { "saveBitmap", saveBitmap },
             { "__upcast", upcast },
             { nullptr, nullptr }
         };
@@ -45,6 +49,30 @@ struct BitmapBinding : public Binding<BitmapBinding,Bitmap>
         push( L, b );
 
         return 1;
+    }
+
+    static int createNew( lua_State* L )
+    {
+        BitmapPtr b = fromStack( L, 1 );
+        int w = luaL_checknumber( L, 2 );
+        int h = luaL_checknumber( L, 3 );
+
+        b->create( w, h );
+
+        return 0;
+    }
+
+    static int blit( lua_State* L )
+    {
+        BitmapPtr b = fromStack( L, 1 );
+        BitmapPtr o = fromStack( L, 2 );
+        int x = luaL_checknumber( L, 3 );
+        int y = luaL_checknumber( L, 4 );
+        int scale = luaL_checknumber( L, 5 );
+
+        b->blit( o, x, y, scale );
+
+        return 0;
     }
 
     static int loadFile( lua_State* L )
@@ -82,6 +110,17 @@ struct BitmapBinding : public Binding<BitmapBinding,Bitmap>
         b->setBitmap( n );
 
         return 0;
+    }
+
+    static int saveBitmap( lua_State* L )
+    {
+        BitmapPtr b = fromStack( L, 1 );
+
+        std::string filename( lua_tostring( L, 2 ) );
+
+        lua_pushboolean( L, b->saveToFile( filename ) );
+
+        return 1;
     }
 
     static int upcast( lua_State* L )
