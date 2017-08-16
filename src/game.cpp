@@ -133,14 +133,18 @@ void Game::setScene()
 
     RenderListPtr rl = make_shared<RenderList>();
 
-    rl->add( make_shared<Rectangle>( 4, 4,  100, 30, 8, 8, al_map_rgba(58,68,115,200)));
-    rl->add( make_shared<Rectangle>( 4, 34, 100, 60, 8, 8, al_map_rgba(58,68,15,200)));
+    rl->add( make_shared<Rectangle>( SCREEN_W-380, SCREEN_H-35, SCREEN_W-230, SCREEN_H-5, 8, 8, al_map_rgba(58,68,115,200)));
+    rl->add( make_shared<Rectangle>( SCREEN_W-220, SCREEN_H-35, SCREEN_W-120, SCREEN_H-5, 8, 8, al_map_rgba(58,68,115,200)));
+    rl->add( make_shared<Rectangle>( SCREEN_W-110, SCREEN_H-35, SCREEN_W-10,  SCREEN_H-5, 8, 8, al_map_rgba(58,68,115,200)));
 
-    fpsText = make_shared<Text>( font, al_map_rgb( 255, 255, 255 ), 54, 8 );
+    fpsText = make_shared<Text>( font, al_map_rgb( 255, 255, 255 ), SCREEN_W-60, SCREEN_H-30 );
     rl->add( fpsText );
 
-    spsText = make_shared<Text>( font, al_map_rgb( 255, 255, 255 ), 54, 38 );
+    spsText = make_shared<Text>( font, al_map_rgb( 255, 255, 255 ), SCREEN_W-170, SCREEN_H-30 );
     rl->add( spsText );
+
+    memText = make_shared<Text>( font, al_map_rgb( 255, 255, 255 ), SCREEN_W-305, SCREEN_H-30 );
+    rl->add( memText );
 
     rl->setOrder( 254 );
 
@@ -264,6 +268,11 @@ void Game::run()
 
                 luaUpdate( t );
                 console->resume();
+
+                int kb = lua_gc( L, LUA_GCCOUNT, 0 );
+
+                memText->clearText();
+                memText << "Mem kb:" << kb;
             }
 
             if( event.type == ALLEGRO_EVENT_MOUSE_BUTTON_DOWN ) {

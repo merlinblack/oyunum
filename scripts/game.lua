@@ -10,15 +10,15 @@ require( 'gui/gui' )
 map_data = dozipfile( './data/map.lua.gz' )
 
 pulse = coroutine.create( function()
+    local c = AllegroColor( 0, 128, 128, 255 )
+
     while true do
         for i=0,255,5 do
-            c = world.color
             c.r = i
             world.color = c
             coroutine.yield()
         end
         for i=255,0,-5 do
-            c = world.color
             c.r = i
             world.color = c
             coroutine.yield()

@@ -50,7 +50,7 @@ class Game
 
     TextPtr fpsText;
     TextPtr spsText;
-    TextPtr mouseText;
+    TextPtr memText;
 
     ConsolePtr console;
 
