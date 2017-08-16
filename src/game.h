@@ -54,8 +54,6 @@ class Game
 
     ConsolePtr console;
 
-    bool redraw;
-
     int width, height;
     float scaleX, scaleY;
 
@@ -65,7 +63,7 @@ class Game
 
     public:
 
-    Game() : display(nullptr), frameTimer(nullptr), eventQueue(nullptr), redraw(false), L(nullptr), shouldStop(false)
+    Game() : display(nullptr), frameTimer(nullptr), eventQueue(nullptr), L(nullptr), shouldStop(false)
     {
     }
 
