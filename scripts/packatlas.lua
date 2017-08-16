@@ -28,6 +28,8 @@ function packatlas:process()
 
     self:compressFramwTable()
 
+    print( 'Completed packing atlas for ' .. self.filename )
+
 end
 
 function packatlas:loadImages()
@@ -38,6 +40,7 @@ function packatlas:loadImages()
         bitmap.sw = bitmap.w * self.scaling
         bitmap.sh = bitmap.h * self.scaling
         table.insert( self.bitmaps, bitmap )
+        coroutine.yield()
     end
 end
 
@@ -80,6 +83,8 @@ function packatlas:fillcanvas( canvas )
             -- Vertical
             local subcanvas = { x = canvas.x, y = canvas.y + bitmap.sh + self.padding, w = canvas.w, h = canvas.h - bitmap.sh - self.padding }
             self:fillcanvas( subcanvas )
+
+            coroutine.yield()
 
             return
         end

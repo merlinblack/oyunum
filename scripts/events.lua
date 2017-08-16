@@ -22,7 +22,12 @@ end
 
 function mouseEvent( time, what, button, x, y, z, dx, dy, dz )
     if what == 'move' then
-        info.mouseAxes = { x = x, y = y, z = z, dx = dx, dy = dy, dz = dz }
+        info.mouseAxes.x = x
+        info.mouseAxes.y = y
+        info.mouseAxes.z = z
+        info.mouseAxes.dx = dx
+        info.mouseAxes.dy = dy
+        info.mouseAxes.dz = dz
         mouseMoved( info.mouseButton, time, x, y )
     end
 
