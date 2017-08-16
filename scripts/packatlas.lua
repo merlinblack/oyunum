@@ -18,17 +18,27 @@ function packatlas:process()
 
     self:loadImages()
 
+    coroutine.yield()
+
     self:sortImages()
     
+    coroutine.yield()
+
     self:placeImages()
     
+    coroutine.yield()
+
     self:saveComposite()
     
+    coroutine.yield()
+
     self:writeFrameTable()
 
-    self:compressFramwTable()
+    coroutine.yield()
 
-    print( 'Completed packing atlas for ' .. self.filename )
+    self:compressFrameTable()
+
+    print( 'Completed packing atlas for ' .. self.filename  .. '.' )
 
 end
 
@@ -99,6 +109,7 @@ function packatlas:fits( canvas, image )
 end
 
 function packatlas:saveComposite()
+    print( 'Saving composite image ' .. self.filename .. '.png' )
     self.composite:saveBitmap( self.outputdir .. self.filename .. '.png' )
 end
    
@@ -106,8 +117,10 @@ function packatlas:writeFrameTable()
     local frameTable = io.open( self.outputdir .. self.filename .. '.lua', 'w+' )
     frameTable:write( 'return {\n' )
     for _, bitmap in ipairs( self.placed ) do
+        coroutine.yield()
         local name = bitmap.name
         local desc = string.sub( name, 1, string.find( name, '.png' )-1 )
+        print( 'Writing frame table entry for ' .. name )
         desc = desc:gsub( '-', '_')
         desc = desc .. ' = { x = ' .. bitmap.x .. ', y = ' .. bitmap.y
         desc = desc .. ', w = ' .. bitmap.sw .. ', h = ' .. bitmap.sh .. ' },'
@@ -117,9 +130,10 @@ function packatlas:writeFrameTable()
     frameTable:close()
 end
 
-function packatlas:compressFramwTable()
+function packatlas:compressFrameTable()
     local filename = self.outputdir .. self.filename .. '.lua'
 
+    print( 'Gzipping ' .. filename )
     os.execute( 'rm -f ' .. filename .. '.gz' )
-    os.execute( 'gzip ' .. filename )
+    os.execute( 'gzip ' .. filename .. ' &')
 end

@@ -122,8 +122,6 @@ bool Game::boot()
     console->print( std::string( "Está es una prueba\nTeşekker edirim\nOne\t1\nTwo\t2\nÜç\t3\nDört\t4" ) );
     console->print( std::string( "^yellow^" GIT_REPO_VERSION_STR ));
 
-    redraw = true;
-
     return true;
 }
 
@@ -133,17 +131,17 @@ void Game::setScene()
 
     RenderListPtr rl = make_shared<RenderList>();
 
-    rl->add( make_shared<Rectangle>( SCREEN_W-380, SCREEN_H-35, SCREEN_W-230, SCREEN_H-5, 8, 8, al_map_rgba(58,68,115,200)));
-    rl->add( make_shared<Rectangle>( SCREEN_W-220, SCREEN_H-35, SCREEN_W-120, SCREEN_H-5, 8, 8, al_map_rgba(58,68,115,200)));
-    rl->add( make_shared<Rectangle>( SCREEN_W-110, SCREEN_H-35, SCREEN_W-10,  SCREEN_H-5, 8, 8, al_map_rgba(58,68,115,200)));
+    rl->add( make_shared<Rectangle>( SCREEN_W-480, SCREEN_H-35, SCREEN_W-330, SCREEN_H-5, 8, 8, al_map_rgba(58,68,115,200)));
+    rl->add( make_shared<Rectangle>( SCREEN_W-320, SCREEN_H-35, SCREEN_W-170, SCREEN_H-5, 8, 8, al_map_rgba(58,68,115,200)));
+    rl->add( make_shared<Rectangle>( SCREEN_W-160, SCREEN_H-35, SCREEN_W-10,  SCREEN_H-5, 8, 8, al_map_rgba(58,68,115,200)));
 
-    fpsText = make_shared<Text>( font, al_map_rgb( 255, 255, 255 ), SCREEN_W-60, SCREEN_H-30 );
+    fpsText = make_shared<Text>( font, al_map_rgb( 255, 255, 255 ), SCREEN_W-85, SCREEN_H-30 );
     rl->add( fpsText );
 
-    spsText = make_shared<Text>( font, al_map_rgb( 255, 255, 255 ), SCREEN_W-170, SCREEN_H-30 );
+    spsText = make_shared<Text>( font, al_map_rgb( 255, 255, 255 ), SCREEN_W-245, SCREEN_H-30 );
     rl->add( spsText );
 
-    memText = make_shared<Text>( font, al_map_rgb( 255, 255, 255 ), SCREEN_W-305, SCREEN_H-30 );
+    memText = make_shared<Text>( font, al_map_rgb( 255, 255, 255 ), SCREEN_W-405, SCREEN_H-30 );
     rl->add( memText );
 
     rl->setOrder( 254 );
@@ -180,16 +178,44 @@ void Game::run()
         shouldStop = true;
     }
 
-    int fps_accum = 0, fps = 0;
-    double fps_time = 0; 
+    int fps_accum = 0;
+    int fps_worst = 1000;
+    int fps_best = 0;
+    int sps_accum = 0;
+    int sps_worst = 1000;
+    int sps_best = 0;
+    double update_time = al_get_time(); 
+    double t;
 
-    int sps_accum = 0, sps = 0;
-    double sps_time = 0;
+    bool redraw = false;
+    bool scriptrun = false;
 
     while( ! shouldStop )
     {
         ALLEGRO_EVENT event;
         al_wait_for_event( eventQueue, &event );
+
+        t = al_get_time();
+
+        if( t - update_time >= 1 ) // Every second ...
+        {
+            update_time = t;
+
+            if( fps_best < fps_accum ) { fps_best = fps_accum; }
+            if( fps_worst > fps_accum ) { fps_worst = fps_accum; }
+            fpsText->clearText();
+            fpsText << "FPS: " << fps_accum << "/" << fps_best << "/" << fps_worst;
+            fps_accum = 0;
+
+            if( sps_best < sps_accum ) { sps_best = sps_accum; }
+            if( sps_worst > sps_accum ) { sps_worst = sps_accum; }
+            spsText->clearText();
+            spsText << "SPS: " << sps_accum << "/" << sps_best << "/" << sps_worst;
+            sps_accum = 0;
+
+            memText->clearText();
+            memText << "Lua Mem " << lua_gc( L, LUA_GCCOUNT, 0 ) << "kb";
+        }
 
         if( event.type == ALLEGRO_EVENT_DISPLAY_CLOSE )
             break;
@@ -238,41 +264,20 @@ void Game::run()
 
             if( event.type == ALLEGRO_EVENT_TIMER && event.timer.source == frameTimer )
             {
-                double t = al_get_time();
-                fps_accum++;
-
-                if( t - fps_time >= 1 )
-                {
-                    fps = fps_accum;
-                    fps_accum = 0;
-                    fps_time = t;
-                    fpsText->clearText();
-                    fpsText << "FPS:  " << fps;
-                }
-
                 redraw = true;
             }
 
             if( event.type == ALLEGRO_EVENT_TIMER && event.timer.source == scriptTimer )
             {
-                double t = al_get_time();
-                sps_accum++;
-                if( t - sps_time >= 1 )
-                {
-                    sps = sps_accum;
-                    sps_accum = 0;
-                    sps_time = t;
-                    spsText->clearText();
-                    spsText << "SPS: " << sps;
-                }
+                scriptrun = true;
+            }
 
+            if( scriptrun && al_is_event_queue_empty( eventQueue ) )
+            {
+                sps_accum++;
                 luaUpdate( t );
                 console->resume();
-
-                int kb = lua_gc( L, LUA_GCCOUNT, 0 );
-
-                memText->clearText();
-                memText << "Mem kb:" << kb;
+                scriptrun = false;
             }
 
             if( event.type == ALLEGRO_EVENT_MOUSE_BUTTON_DOWN ) {
@@ -326,6 +331,8 @@ void Game::run()
 
         if( redraw && al_is_event_queue_empty( eventQueue ) )
         {
+            fps_accum++;
+
             redraw = false;
 
             al_clear_to_color( al_map_rgb( 83, 24, 24 ) );
