@@ -10,7 +10,6 @@ function packatlas:__init( directory, outputdir, name, width, height, scaling, p
     self.padding = padding
     self.bitmaps = {}
     self.placed = {}
-    self.names = {}
     self.composite = Bitmap()
     self.composite:create( width, height )
 end
@@ -35,7 +34,7 @@ function packatlas:loadImages()
     for file in io.lines( self.directory .. 'imagelist.txt' ) do
         print( '^yellow^Loading:^!^', file )
         bitmap = Bitmap( self.directory .. file )
-        self.names[bitmap] = file
+        bitmap.name = file
         table.insert( self.bitmaps, bitmap )
     end
 end
@@ -63,7 +62,7 @@ function packatlas:fillcanvas( canvas )
     for index, bitmap in ipairs( self.bitmaps ) do
         if self:fits( canvas, bitmap ) then
             
-            print( '^yellow^Placing image:^!^', self.names[bitmap] )
+            print( '^yellow^Placing image:^!^', bitmap.name )
             self.composite:blit( bitmap, canvas.x, canvas.y, self.scaling )
             
             table.remove( self.bitmaps, index )
@@ -99,7 +98,7 @@ function packatlas:writeFrameTable()
     local frameTable = io.open( self.outputdir .. self.filename .. '.lua', 'w+' )
     frameTable:write( 'return {\n' )
     for _, bitmap in ipairs( self.placed ) do
-        local name = self.names[bitmap]
+        local name = bitmap.name
         local desc = string.sub( name, 1, string.find( name, '.png' )-1 )
         desc = desc:gsub( '-', '_')
         desc = desc .. ' = { x = ' .. bitmap.x .. ', y = ' .. bitmap.y
