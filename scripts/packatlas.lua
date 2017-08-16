@@ -35,6 +35,8 @@ function packatlas:loadImages()
         print( '^yellow^Loading:^!^', file )
         bitmap = Bitmap( self.directory .. file )
         bitmap.name = file
+        bitmap.sw = bitmap.w * self.scaling
+        bitmap.sh = bitmap.h * self.scaling
         table.insert( self.bitmaps, bitmap )
     end
 end
@@ -63,6 +65,7 @@ function packatlas:fillcanvas( canvas )
         if self:fits( canvas, bitmap ) then
             
             print( '^yellow^Placing image:^!^', bitmap.name )
+            print( bitmap, canvas.x, canvas.y, self.scaling )
             self.composite:blit( bitmap, canvas.x, canvas.y, self.scaling )
             
             table.remove( self.bitmaps, index )
@@ -72,10 +75,10 @@ function packatlas:fillcanvas( canvas )
             table.insert( self.placed, bitmap )
 
             -- Horizontal
-            local subcanvas = { x = canvas.x + bitmap.w + self.padding, y = canvas.y, w = canvas.w - bitmap.w - self.padding, h = bitmap.h + self.padding } 
+            local subcanvas = { x = canvas.x + bitmap.sw + self.padding, y = canvas.y, w = canvas.w - bitmap.sw - self.padding, h = bitmap.sh + self.padding }
             self:fillcanvas( subcanvas )
             -- Vertical
-            local subcanvas = { x = canvas.x, y = canvas.y + bitmap.h + self.padding, w = canvas.w, h = canvas.h - bitmap.h - self.padding }
+            local subcanvas = { x = canvas.x, y = canvas.y + bitmap.sh + self.padding, w = canvas.w, h = canvas.h - bitmap.sh - self.padding }
             self:fillcanvas( subcanvas )
 
             return
@@ -84,7 +87,7 @@ function packatlas:fillcanvas( canvas )
 end
 
 function packatlas:fits( canvas, image )
-    if image.w + self.padding <= canvas.w and image.h + self.padding <= canvas.h then
+    if image.sw + self.padding <= canvas.w and image.sh + self.padding <= canvas.h then
         return true
     end
     return false
@@ -102,7 +105,7 @@ function packatlas:writeFrameTable()
         local desc = string.sub( name, 1, string.find( name, '.png' )-1 )
         desc = desc:gsub( '-', '_')
         desc = desc .. ' = { x = ' .. bitmap.x .. ', y = ' .. bitmap.y
-        desc = desc .. ', w = ' .. bitmap.w .. ', h = ' .. bitmap.h .. ' },'
+        desc = desc .. ', w = ' .. bitmap.sw .. ', h = ' .. bitmap.sh .. ' },'
         frameTable:write( desc .. '\n' )
     end
     frameTable:write('}\n')

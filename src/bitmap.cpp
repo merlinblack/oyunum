@@ -20,7 +20,7 @@ void Bitmap::create( int w, int h )
     al_set_target_bitmap( prev );
 }
 
-void Bitmap::blit( const BitmapPtr& other, int x, int y, float scale )
+void Bitmap::blit( const BitmapPtr& other, float x, float y, float scale )
 {
     ALLEGRO_BITMAP* prev = al_get_target_bitmap();
     al_set_target_bitmap( bitmap );
