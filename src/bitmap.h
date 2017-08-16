@@ -13,7 +13,7 @@ using BitmapPtr = std::shared_ptr<Bitmap>;
 class Bitmap : public Renderable
 {
     ALLEGRO_BITMAP* bitmap;
-    int x, y;
+    float x, y;
     float scale;
 
     public:
@@ -30,10 +30,10 @@ class Bitmap : public Renderable
     BitmapPtr getSubBitmap( int _x, int _y, int _w, int _h );
     void setBitmap( ALLEGRO_BITMAP* nb );
     void setBitmap( BitmapPtr& nb );
-    void blit( const BitmapPtr& other, int x, int y, float scale );
+    void blit( const BitmapPtr& other, float x, float y, float scale );
 
-    int getX() { return x; }
-    int getY() { return y; }
+    float getX() { return x; }
+    float getY() { return y; }
 
     float getScale() { return scale; }
     

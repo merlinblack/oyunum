@@ -68,9 +68,9 @@ struct BitmapBinding : public Binding<BitmapBinding,Bitmap>
     {
         BitmapPtr b = fromStack( L, 1 );
         BitmapPtr o = fromStack( L, 2 );
-        int x = luaL_checknumber( L, 3 );
-        int y = luaL_checknumber( L, 4 );
-        int scale = luaL_checknumber( L, 5 );
+        float x = luaL_checknumber( L, 3 );
+        float y = luaL_checknumber( L, 4 );
+        float scale = luaL_checknumber( L, 5 );
 
         b->blit( o, x, y, scale );
 
@@ -92,10 +92,10 @@ struct BitmapBinding : public Binding<BitmapBinding,Bitmap>
     {
         BitmapPtr b = fromStack( L, 1 );
 
-        int x = luaL_checkinteger( L, 2 );
-        int y = luaL_checkinteger( L, 3 );
-        int w = luaL_checkinteger( L, 4 );
-        int h = luaL_checkinteger( L, 5 );
+        int x = (int)luaL_checknumber( L, 2 );
+        int y = (int)luaL_checknumber( L, 3 );
+        int w = (int)luaL_checknumber( L, 4 );
+        int h = (int)luaL_checknumber( L, 5 );
 
         BitmapPtr s = b->getSubBitmap( x, y, w, h );
 
@@ -167,11 +167,11 @@ struct BitmapBinding : public Binding<BitmapBinding,Bitmap>
         switch( which )
         {
             case 0:
-                b->setX( luaL_checkinteger( L, 3 ) );
+                b->setX( luaL_checknumber( L, 3 ) );
                 break;
 
             case 1:
-                b->setY( luaL_checkinteger( L, 3 ) );
+                b->setY( luaL_checknumber( L, 3 ) );
                 break;
         }
 
