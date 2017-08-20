@@ -3,6 +3,7 @@
 
 #include <allegro5/allegro_font.h>
 #include <memory>
+#include <string>
 
 class Font
 {
