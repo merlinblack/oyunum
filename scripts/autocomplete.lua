@@ -1,10 +1,12 @@
+require 'misc'
+
 doubleTab = doubleTab or {}
 
-keywords = keywords or { 
-    ['and'] = 1,       ['break'] = 1,     ['do'] = 1,        ['else'] = 1,      ['elseif'] = 1,    ['end'] = 1,
-    ['false'] = 1,     ['for'] = 1,       ['function'] = 1,  ['goto'] = 1,      ['if'] = 1,        ['in'] = 1,
-    ['local'] = 1,     ['nil'] = 1,       ['not'] = 1,       ['or'] = 1,        ['repeat'] = 1,    ['return'] = 1,
-    ['then'] = 1,      ['true'] = 1,      ['until'] = 1,     ['while'] = 1,
+keywords = keywords or valuesToKeys { 
+    'and',       'break',     'do',        'else',      'elseif',    'end',
+    'false',     'for',       'function',  'goto',      'if',        'in',
+    'local',     'nil',       'not',       'or',        'repeat',    'return',
+    'then',      'true',      'until',     'while',
  }
 
 function autoComplete( str )
