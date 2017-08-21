@@ -1,20 +1,27 @@
 doubleTab = doubleTab or {}
 
+keywords = keywords or { 
+    ['and'] = 1,       ['break'] = 1,     ['do'] = 1,        ['else'] = 1,      ['elseif'] = 1,    ['end'] = 1,
+    ['false'] = 1,     ['for'] = 1,       ['function'] = 1,  ['goto'] = 1,      ['if'] = 1,        ['in'] = 1,
+    ['local'] = 1,     ['nil'] = 1,       ['not'] = 1,       ['or'] = 1,        ['repeat'] = 1,    ['return'] = 1,
+    ['then'] = 1,      ['true'] = 1,      ['until'] = 1,     ['while'] = 1,
+ }
+
 function autoComplete( str )
     local prefixend = string.find( str:reverse(), '[() %[%]=+/,%%]' )
     local prefix = ''
-    local posibles
+    local possibles
 
     if prefixend then
         prefix = string.sub( str, 1, #str - prefixend + 1 )
         str = string.sub( str, #str - prefixend + 2 )
     end
 
-    str, posibles = complete(str)
+    str, possibles = complete(str)
 
-    if #posibles > 1 then
+    if #possibles > 1 then
         if doubleTab.str == str then
-            print( table.unpack( posibles ) )
+            print( table.unpack( possibles ) )
         else
             doubleTab.str = str
         end
@@ -28,15 +35,18 @@ function autoCompleteClear()
 end
 
 function complete( str )
-    local possibles = getCompletions( str )
+    local possibles = getCompletions( keywords, str )
+    for k,v in pairs( getCompletions( _G, str ) ) do
+        table.insert( possibles, v )
+    end
     if #possibles > 0 then
         str = string.sub( possibles[1], 1, getIdenticalPrefixLength( possibles, #str ) )
     end
     return str, possibles
 end
 
-function getCompletions( str )
-    local g = _G
+function getCompletions( where, str )
+    local g = where
     local ret = {}
     local dotpos = string.find( str:reverse(), '[%.:]' )
     local prefix = ''
@@ -46,7 +56,7 @@ function getCompletions( str )
         dotpos = #str - dotpos
         prefix = string.sub( str, 1, dotpos )
         dottype = string.sub( str, dotpos + 1, dotpos + 1 )
-        g = getTable(prefix)
+        g = getTable( where, prefix)
         str = string.sub( str, dotpos + 2 )
     end
 
@@ -80,20 +90,14 @@ function getCompletions( str )
     return ret
 end
 
-function getTable( tblname )
+function getTable( where, tblname )
     --print( 'Looking up:', tblname )
     local lastdot = string.find( tblname:reverse(), '%.' )
     if lastdot == nil then
-        return _G[tblname]
+        return where[tblname]
     end
     local prefix = string.sub( tblname, 1, #tblname - lastdot )
-    local tbl = getTable( prefix )
-    if type(tbl) ~= 'table' then
-        if type(tbl) ~= 'userdata' then
-            error( prefix .. ' is not a table or class.' )
-        end
-        tbl = infotable( tbl )
-    end
+    local tbl = getTable( where, prefix )
     local subscript = string.sub( tblname, #tblname - string.find( tblname:reverse(), '%.' ) + 2 )
     --print( "Subscript:", subscript, tblname )
     return tbl[subscript]
