@@ -2,6 +2,8 @@
 
 git submodule update --init
 
+./getdata.sh
+
 mkdir build
 cd build
 
