@@ -25,6 +25,29 @@ function getTileGrid( ts, layerName )
     return tg
 end
 
+for x = 0, 800, 112 do
+    local sky = Bitmap 'data/sky.png'
+    local sea = Bitmap 'data/sea.png'
+    sky.x = x
+    sea.x = x
+    sea.y = 304
+    renderlist:insert(sky)
+    renderlist:insert(sea)
+end
+
+for x = 0, 800, 236 do
+    local clouds = Bitmap 'data/clouds.png'
+    clouds.x = x
+    clouds.y = 88
+    renderlist:insert(clouds)
+end
+
+far_grounds = Bitmap 'data/far_grounds.png'
+far_grounds.x = 300
+far_grounds.y = 290
+renderlist:insert(far_grounds)
+
+
 ts = TileSet(1, 16, 16)
 if not ts:loadSourceBitmap( 'data/magic_cliff_tileset.png') then
     print( 'Could not load tile set bitmap' )
@@ -75,7 +98,7 @@ table.insert( tasks, animate )
 table.insert( tasks, slide )
 
 require 'gui/button'
-btn_console = Button( gui.atlas, renderlist, 16, 400, 96, "Console" )
+btn_console = Button( gui.atlas, renderlist, 16, 410, 96, "Console" )
 function btn_console:action()
     console('toggle')
 end
