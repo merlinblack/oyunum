@@ -119,7 +119,7 @@ bool Game::boot()
 
     console = std::make_shared<Console>( L, console_font, SCREEN_W );
     console->setOrder(255);
-    console->print( std::string( "Está es una prueba\nTeşekker edirim\nOne\t1\nTwo\t2\nÜç\t3\nDört\t4" ) );
+    console->print( std::string( "Está es una prueba\n^red^Bu bir test\nOne\t1\nTwo\t2\nÜç\t3\nDört\t4" ) );
     console->print( std::string( "^yellow^" GIT_REPO_VERSION_STR ));
 
     return true;
@@ -335,7 +335,7 @@ void Game::run()
 
             redraw = false;
 
-            al_clear_to_color( al_map_rgb( 83, 24, 24 ) );
+            al_clear_to_color( al_map_rgb( 43, 73, 46 ) );
 
             renderlist->render();
 

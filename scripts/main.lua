@@ -5,6 +5,7 @@ require( 'events' )
 require( 'sprite' )
 require( 'autocomplete' )
 require( 'misc' )
+require( 'gui.gui' )
 print( 'Completed' );
 
 function gensprites()
