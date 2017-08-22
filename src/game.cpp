@@ -53,7 +53,7 @@ void Game::resize()
 
 void Game::registerEventSources()
 {
-    frameTimer = al_create_timer( 1.0 / 60.0 );  // 60 FPS
+    frameTimer = al_create_timer( 1.0 / 30.0 );  // 60 FPS
     scriptTimer = al_create_timer( 1.0 / 100.0 ); // Update script called 100x per second
     eventQueue = al_create_event_queue();
 
@@ -78,6 +78,7 @@ void Game::initialiseLua()
     lua_setfield( L, LUA_REGISTRYINDEX, LUA_GAME_INDEX );
 
     lua_register( L, "quit", Game::quit );
+    lua_register( L, "setTimerDivider", Game::setTimerDivider );
 
     FontBinding::push( L, font );
     lua_setglobal( L, "fixed_font" );
@@ -380,6 +381,32 @@ int Game::quit( lua_State *L )
     Game* self = static_cast<Game*>(lua_touserdata( L, -1 ));
 
     self->shouldStop = true;
+
+    return 0;
+}
+
+int Game::setTimerDivider( lua_State *L )
+{
+    static const char* keys[] = { "fps", "sps", nullptr };
+    lua_getfield( L, LUA_REGISTRYINDEX, LUA_GAME_INDEX );
+    Game* self = static_cast<Game*>(lua_touserdata( L, -1 ));
+
+    int which = luaL_checkoption( L, 1, nullptr, keys );
+
+    float divider = luaL_checknumber( L, 2 );
+
+    switch( which )
+    {
+        case 0:
+            al_set_timer_speed( self->frameTimer, 1.0 / divider );
+            break;
+        case 1:
+            al_set_timer_speed( self->scriptTimer, 1.0 / divider );
+            break;
+        default:
+            return luaL_error( L, "First parameter should be either 'fps' or 'sps'." );
+            break;
+    }
 
     return 0;
 }

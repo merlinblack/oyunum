@@ -34,3 +34,6 @@ build
 release
 debug
 data/*
+
+# Editor temp files
+*.swp
