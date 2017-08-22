@@ -12,5 +12,5 @@ function gensprites()
 end
 
 function rungame()
-    dofile 'scripts/game.lua'
+    dofile 'scripts/magic_cliffs.lua'
 end
