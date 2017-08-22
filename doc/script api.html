@@ -1,0 +1,257 @@
+<!DOCTYPE HTML>
+<html>
+ <head>
+  <meta charset="utf-8"/>
+  <title>
+   Made with Remarkable!
+  </title>
+  <link href="http://cdnjs.cloudflare.com/ajax/libs/highlight.js/8.1/styles/github.min.css" rel="stylesheet"/>
+  <style type="text/css">
+   @import url(http://fonts.googleapis.com/css?family=Indie+Flower);blockquote:after,blockquote:before{color:#000;font-size:2em;line-height:.1em;vertical-align:-.4em}table tr td,table tr th{border:1px solid #ccc;text-align:left;padding:6px 13px;margin:0}pre code,table,table tr{padding:0}body{font-family:Indie Flower,Daniel,cursive}h1,h2{text-align:center}blockquote{margin:1.5em 10px;padding:.5em 10px}blockquote:before{content:open-quote;margin-right:.25em}blockquote:after{content:close-quote;margin-left:.25em}blockquote p{display:inline}hr{border:0;border-top:dashed 2px gray}table tr{border-top:1px solid #ccc;background-color:#fff;margin:0}table tr:nth-child(2n){background-color:#aaa}table tr th{font-weight:700}table tr td :first-child,table tr th :first-child{margin-top:0}table tr td:last-child,table tr th :last-child{margin-bottom:0}code,tt{margin:0 2px;padding:0 5px;white-space:nowrap;border:1px solid #eaeaea;background-color:#f8f8f8;border-radius:3px}pre code{margin:0;white-space:pre;border:none;background:0 0}.highlight pre,pre{background-color:#f8f8f8;border:1px solid #ccc;font-size:13px;line-height:19px;overflow:auto;padding:6px 10px;border-radius:3px}
+  </style>
+ </head>
+ <body>
+  <h1>
+   Oyunum Script C++ Bindings
+  </h1>
+  <h2>
+   Index
+  </h2>
+  <p>
+   Bitmap
+   <br/>
+   Color
+   <br/>
+   Font
+   <br/>
+   Renderable
+   <br/>
+   Render List
+   <br/>
+   Text
+   <br/>
+   Tile Grid
+   <br/>
+   Tile Set
+   <br/>
+   Console
+   <br/>
+   Misc
+  </p>
+  <p>
+   [C] denotes a constructor.
+  </p>
+  <hr/>
+  <h2>
+   Bitmap (Renderable)
+  </h2>
+  <h4>
+   Properties:
+  </h4>
+  <p>
+   x   -   x co-ordinate of upper left corner for rendering.
+   <br/>
+   y   -   y co-ordinate of upper left corner for rednering.
+   <br/>
+   w   -   width in pixels.
+   <br/>
+   h   -   height in pixels.
+   <br/>
+   scale   -   scale for rendering.
+  </p>
+  <h4>
+   Methods:
+  </h4>
+  <p>
+   [C] Bitmap( [filename] )    -   Construct a bitmap and optionally load an image file.
+   <br/>
+   blit( Bitmap, x, y, scale ) -   Draw the given bitmap at x, y and scaled to scale on the bitmap.
+   <br/>
+   create( width, height ) -   Create a bitmap of given diamensions and filled with transparent color.
+   <br/>
+   loadfile( filename )    -   Load bitmap image data from a file.
+   <br/>
+   getSubBitmap( x, y, w, h )  -   Grab a sub-bitmap from the given co-ordinates and width x height.
+   <br/>
+   saveBitmap( filename )  -   Save the bitmap image data to filename. Format is deduced from the file extension.
+   <br/>
+   setBitmap( Bitmap ) -   Replace (if there is one) the current bitmap with the bitmap from Bitmap.
+  </p>
+  <hr/>
+  <h2>
+   Color
+  </h2>
+  <h4>
+   Properties:
+  </h4>
+  <p>
+   r   -   red component of the color (0-255)
+   <br/>
+   g   -   green component of the color (0-255)
+   <br/>
+   b   -   blue component of the color (0-255)
+   <br/>
+   a   -   alpha component of the color (0-255)
+  </p>
+  <h4>
+   Methods:
+  </h4>
+  <p>
+   [C] Color( r, g, b, a ) -   Construct a color object with the given color values.
+  </p>
+  <hr/>
+  <h2>
+   Font
+  </h2>
+  <h4>
+   Properties:
+  </h4>
+  <p>
+   None.
+  </p>
+  <h4>
+   Methods:
+  </h4>
+  <p>
+   [C] Font( filename, size )  -   Construct a font and load the font from filename at the given size.
+  </p>
+  <hr/>
+  <h2>
+   Renderable
+  </h2>
+  <h4>
+   Properties:
+  </h4>
+  <p>
+   None.
+  </p>
+  <h4>
+   Methods:
+  </h4>
+  <p>
+   None.
+  </p>
+  <hr/>
+  <h2>
+   Render List (Renderable)
+  </h2>
+  <h4>
+   Properties:
+  </h4>
+  <p>
+   None.
+  </p>
+  <h4>
+   Methods:
+  </h4>
+  <p>
+   [C] Renderable()    -   create a new render list.
+   <br/>
+   sort()  -   re-sort list by renderable sort order.
+   <br/>
+   insert(r)   -   insert renderable r in the list according to it's sort order
+   <br/>
+   add(r)  -   add renderable to end of the list and adjust it's sort order
+   <br/>
+   remove(r)   -   remove renderable from the list.
+  </p>
+  <hr/>
+  <h2>
+   Text (Renderable)
+  </h2>
+  <h4>
+   Properties:
+  </h4>
+  <p>
+   color   -   The color of the text.
+   <br/>
+   text    -   The text.
+  </p>
+  <h4>
+   Methods:
+  </h4>
+  <p>
+   [C] Text( text, font, color, x, y ) -   Create a text renderable with the given parameters.
+   <br/>
+   setXY( x, y )   -   Change the x, y co-ordinates for rendering.
+  </p>
+  <hr/>
+  <h2>
+   Tile Grid (Renderable)
+  </h2>
+  <h4>
+   Properties:
+  </h4>
+  <p>
+   None.
+  </p>
+  <h4>
+   Methods:
+  </h4>
+  <p>
+   [C] TileGrid( tileset, width, height )  -   Create a new Tile Grid using the tileset and width and height in tiles.
+   <br/>
+   setData( data ) -   Load tile data from the given Lua table of integer tile indexes.
+   <br/>
+   setXY( x, y )   -   Set x, and y co-ordinates for rendering.
+  </p>
+  <hr/>
+  <h2>
+   Tile Set
+  </h2>
+  <h4>
+   Properties:
+  </h4>
+  <p>
+   None.
+  </p>
+  <h4>
+   Methods:
+  </h4>
+  <p>
+   [C] TileSet( [first], [w], [h] )    -   Create a tile set with the igven optional parameters, fist - the first tile id of this set, w and h - the width and height of each tile.
+   <br/>
+   loadSourceBitmap( filename )    -   Load tile set image file. Returns true on success.
+   <br/>
+   getTile( id )   -   Get a sub-bitmap coresponding to the given tile id.
+  </p>
+  <hr/>
+  <h2>
+   Console
+  </h2>
+  <h4>
+   Properties:
+  </h4>
+  <p>
+   None.
+  </p>
+  <h4>
+   Free functions:
+  </h4>
+  <p>
+   print( ... )    -   Converts each argument to a string then displays in the console separated by a tab character. Color can be specified in text between '^' (hat) characters. For example "Hello ^red^world.". The sequence ^!^ returns to 'normal' color.
+   <br/>
+   console( command_string )   -   Sends command_string to the console. Commands are: 'open', 'close', 'toggle', and 'clear'.
+  </p>
+  <hr/>
+  <h2>
+   Miscellaneous
+  </h2>
+  <h4>
+   Free Functions:
+  </h4>
+  <p>
+   quit()  -   Cuases the render loop to exit and exit the program.
+  </p>
+  <script src="http://cdnjs.cloudflare.com/ajax/libs/highlight.js/8.1/highlight.min.js">
+  </script>
+  <script>
+   hljs.initHighlightingOnLoad();
+  </script>
+  <script src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML" type="text/javascript">
+  </script>
+  <script type="text/javascript">
+   MathJax.Hub.Config({"showProcessingMessages" : false,"messageStyle" : "none","tex2jax": { inlineMath: [ [ "$", "$" ] ] }});
+  </script>
+ </body>
+</html>
