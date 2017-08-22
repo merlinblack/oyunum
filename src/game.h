@@ -83,6 +83,7 @@ class Game
 
     // Lua routines.
     static int quit( lua_State* L );
+    static int setTimerDivider( lua_State* L );
 };
 
 #endif // GAME_H

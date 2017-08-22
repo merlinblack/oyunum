@@ -105,5 +105,11 @@ console( command_string )	-	Sends command_string to the console. Commands are: '
 ***
 Miscellaneous
 ---------------
+####Global vars:
+info	-	Lua Table. Some Lua scripts will add information to this in addition to the following:
+info.width	-	The screen width (before scaling).
+info.height	-	The screen height (before scaling).
+info.gitver	-	git version string.
 ####Free Functions:
 quit()	-	Cuases the render loop to exit and exit the program.
+setTimerDivider( which, div )	-	Set the per second count for a timer. Valid timers are 'fps' for frames per second, and 'sps' for scripts per second.

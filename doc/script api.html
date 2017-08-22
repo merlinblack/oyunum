@@ -238,10 +238,24 @@
    Miscellaneous
   </h2>
   <h4>
+   Global vars:
+  </h4>
+  <p>
+   info    -   Lua Table. Some Lua scripts will add information to this in addition to the following:
+   <br/>
+   info.width  -   The screen width (before scaling).
+   <br/>
+   info.height -   The screen height (before scaling).
+   <br/>
+   info.gitver -   git version string.
+  </p>
+  <h4>
    Free Functions:
   </h4>
   <p>
    quit()  -   Cuases the render loop to exit and exit the program.
+   <br/>
+   setTimerDivider( which, div )   -   Set the per second count for a timer. Valid timers are 'fps' for frames per second, and 'sps' for scripts per second.
   </p>
   <script src="http://cdnjs.cloudflare.com/ajax/libs/highlight.js/8.1/highlight.min.js">
   </script>
