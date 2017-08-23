@@ -19,23 +19,32 @@
   </h2>
   <p>
    Bitmap
-   <br/>
+  </p>
+  <p>
    Color
-   <br/>
+  </p>
+  <p>
    Font
-   <br/>
+  </p>
+  <p>
    Renderable
-   <br/>
+  </p>
+  <p>
    Render List
-   <br/>
+  </p>
+  <p>
    Text
-   <br/>
+  </p>
+  <p>
    Tile Grid
-   <br/>
+  </p>
+  <p>
    Tile Set
-   <br/>
+  </p>
+  <p>
    Console
-   <br/>
+  </p>
+  <p>
    Misc
   </p>
   <p>
@@ -50,13 +59,17 @@
   </h4>
   <p>
    x   -   x co-ordinate of upper left corner for rendering.
-   <br/>
+  </p>
+  <p>
    y   -   y co-ordinate of upper left corner for rednering.
-   <br/>
+  </p>
+  <p>
    w   -   width in pixels.
-   <br/>
+  </p>
+  <p>
    h   -   height in pixels.
-   <br/>
+  </p>
+  <p>
    scale   -   scale for rendering.
   </p>
   <h4>
@@ -64,17 +77,23 @@
   </h4>
   <p>
    [C] Bitmap( [filename] )    -   Construct a bitmap and optionally load an image file.
-   <br/>
+  </p>
+  <p>
    blit( Bitmap, x, y, scale ) -   Draw the given bitmap at x, y and scaled to scale on the bitmap.
-   <br/>
+  </p>
+  <p>
    create( width, height ) -   Create a bitmap of given diamensions and filled with transparent color.
-   <br/>
+  </p>
+  <p>
    loadfile( filename )    -   Load bitmap image data from a file.
-   <br/>
+  </p>
+  <p>
    getSubBitmap( x, y, w, h )  -   Grab a sub-bitmap from the given co-ordinates and width x height.
-   <br/>
+  </p>
+  <p>
    saveBitmap( filename )  -   Save the bitmap image data to filename. Format is deduced from the file extension.
-   <br/>
+  </p>
+  <p>
    setBitmap( Bitmap ) -   Replace (if there is one) the current bitmap with the bitmap from Bitmap.
   </p>
   <hr/>
@@ -86,11 +105,14 @@
   </h4>
   <p>
    r   -   red component of the color (0-255)
-   <br/>
+  </p>
+  <p>
    g   -   green component of the color (0-255)
-   <br/>
+  </p>
+  <p>
    b   -   blue component of the color (0-255)
-   <br/>
+  </p>
+  <p>
    a   -   alpha component of the color (0-255)
   </p>
   <h4>
@@ -146,13 +168,17 @@
   </h4>
   <p>
    [C] Renderable()    -   create a new render list.
-   <br/>
+  </p>
+  <p>
    sort()  -   re-sort list by renderable sort order.
-   <br/>
-   insert(r)   -   insert renderable r in the list according to it's sort order
-   <br/>
-   add(r)  -   add renderable to end of the list and adjust it's sort order
-   <br/>
+  </p>
+  <p>
+   insert(r)   -   insert renderable r in the list according to it's sort order.
+  </p>
+  <p>
+   add(r)  -   add renderable to end of the list and adjust it's sort order.
+  </p>
+  <p>
    remove(r)   -   remove renderable from the list.
   </p>
   <hr/>
@@ -172,7 +198,8 @@
   </h4>
   <p>
    [C] Text( text, font, color, x, y ) -   Create a text renderable with the given parameters.
-   <br/>
+  </p>
+  <p>
    setXY( x, y )   -   Change the x, y co-ordinates for rendering.
   </p>
   <hr/>
@@ -190,9 +217,11 @@
   </h4>
   <p>
    [C] TileGrid( tileset, width, height )  -   Create a new Tile Grid using the tileset and width and height in tiles.
-   <br/>
+  </p>
+  <p>
    setData( data ) -   Load tile data from the given Lua table of integer tile indexes.
-   <br/>
+  </p>
+  <p>
    setXY( x, y )   -   Set x, and y co-ordinates for rendering.
   </p>
   <hr/>
@@ -210,9 +239,11 @@
   </h4>
   <p>
    [C] TileSet( [first], [w], [h] )    -   Create a tile set with the igven optional parameters, fist - the first tile id of this set, w and h - the width and height of each tile.
-   <br/>
+  </p>
+  <p>
    loadSourceBitmap( filename )    -   Load tile set image file. Returns true on success.
-   <br/>
+  </p>
+  <p>
    getTile( id )   -   Get a sub-bitmap coresponding to the given tile id.
   </p>
   <hr/>
@@ -230,7 +261,8 @@
   </h4>
   <p>
    print( ... )    -   Converts each argument to a string then displays in the console separated by a tab character. Color can be specified in text between '^' (hat) characters. For example "Hello ^red^world.". The sequence ^!^ returns to 'normal' color.
-   <br/>
+  </p>
+  <p>
    console( command_string )   -   Sends command_string to the console. Commands are: 'open', 'close', 'toggle', and 'clear'.
   </p>
   <hr/>
@@ -242,11 +274,14 @@
   </h4>
   <p>
    info    -   Lua Table. Some Lua scripts will add information to this in addition to the following:
-   <br/>
+  </p>
+  <p>
    info.width  -   The screen width (before scaling).
-   <br/>
+  </p>
+  <p>
    info.height -   The screen height (before scaling).
-   <br/>
+  </p>
+  <p>
    info.gitver -   git version string.
   </p>
   <h4>
@@ -254,7 +289,8 @@
   </h4>
   <p>
    quit()  -   Cuases the render loop to exit and exit the program.
-   <br/>
+  </p>
+  <p>
    setTimerDivider( which, div )   -   Set the per second count for a timer. Valid timers are 'fps' for frames per second, and 'sps' for scripts per second.
   </p>
   <script src="http://cdnjs.cloudflare.com/ajax/libs/highlight.js/8.1/highlight.min.js">
