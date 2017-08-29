@@ -93,16 +93,21 @@ function getCompletions( where, str )
 end
 
 function getTable( where, tblname )
-    --print( 'Looking up:', tblname )
+    --print( 'Looking up:', tblname, where )
     local lastdot = string.find( tblname:reverse(), '%.' )
+    --print( 'Lastdot',  lastdot )
     if lastdot == nil then
         return where[tblname]
     end
     local prefix = string.sub( tblname, 1, #tblname - lastdot )
     local tbl = getTable( where, prefix )
     local subscript = string.sub( tblname, #tblname - string.find( tblname:reverse(), '%.' ) + 2 )
-    --print( "Subscript:", subscript, tblname )
-    return tbl[subscript]
+    --print( "Subscript:", subscript, tblname, where )
+    if tbl then
+        return tbl[subscript]
+    else
+        return nil
+    end
 end
 
 function getIdenticalPrefixLength( tbl, start )
