@@ -12,6 +12,8 @@ function packatlas:__init( directory, outputdir, name, width, height, scaling, p
     self.placed = {}
     self.composite = Bitmap()
     self.composite:create( width, height )
+    self.width = width
+    self.height = height
 end
 
 function packatlas:process()
@@ -24,19 +26,35 @@ function packatlas:process()
     
     coroutine.yield()
 
-    self:placeImages()
+    self.atlasIndex = 1
+
+    local allPlaced = false
+
+    while allPlaced == false do
+
+        self:placeImages()
     
-    coroutine.yield()
+        coroutine.yield()
 
-    self:saveComposite()
+        self:saveComposite()
     
-    coroutine.yield()
+        coroutine.yield()
 
-    self:writeFrameTable()
+        self:writeFrameTable()
 
-    coroutine.yield()
+        coroutine.yield()
 
-    self:compressFrameTable()
+        self:compressFrameTable()
+
+        if #self.bitmaps == 0 then
+            allPlaced = true
+        else
+            self.composite = Bitmap()
+            self.composite:create( self.width, self.height )
+            self.atlasIndex = self.atlasIndex + 1
+            self.placed = {}
+        end
+    end
 
     print( 'Completed packing atlas for ' .. self.filename  .. '.' )
 
@@ -108,13 +126,28 @@ function packatlas:fits( canvas, image )
     return false
 end
 
+function packatlas:getIndexedFilename()
+    local filename = self.filename
+    if self.atlasIndex > 1 then
+        filename = filename .. self.atlasIndex
+    end
+    return filename
+end
+
 function packatlas:saveComposite()
-    print( 'Saving composite image ' .. self.filename .. '.png' )
-    self.composite:saveBitmap( self.outputdir .. self.filename .. '.png' )
+    local filename = self:getIndexedFilename()
+    filename = self.outputdir .. filename .. '.png'
+
+    print( 'Saving composite image ' .. filename  )
+    if not self.composite:saveBitmap( filename ) then
+        print( 'Could not save image.' )
+    end
 end
    
 function packatlas:writeFrameTable()
-    local frameTable = io.open( self.outputdir .. self.filename .. '.lua', 'w+' )
+    local filename = self:getIndexedFilename()
+    filename = self.outputdir .. filename .. '.lua'
+    local frameTable = io.open( filename, 'w+' )
     frameTable:write( 'return {\n' )
     for _, bitmap in ipairs( self.placed ) do
         coroutine.yield()
@@ -131,9 +164,10 @@ function packatlas:writeFrameTable()
 end
 
 function packatlas:compressFrameTable()
-    local filename = self.outputdir .. self.filename .. '.lua'
+    local filename = self:getIndexedFilename()
+    filename = self.outputdir .. filename .. '.lua'
 
     print( 'Gzipping ' .. filename )
-    os.execute( 'rm -f ' .. filename .. '.gz' )
+    os.remove( filename .. '.gz' )
     os.execute( 'gzip ' .. filename .. ' &')
 end

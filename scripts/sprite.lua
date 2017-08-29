@@ -4,8 +4,19 @@ require 'dozipfile'
 class 'Sprite' 
 
 function Sprite:__init( file_base_name )
-    self.bitmap = Bitmap( file_base_name .. '.png' )
-    self.frames = dozipfile( file_base_name .. '.lua.gz' )
+    self.bitmaps = {}
+    self.frames = {}
+    self:addFrames( file_base_name )
+end
+
+function Sprite:addFrames( file_base_name )
+    table.insert(self.bitmaps, Bitmap( file_base_name .. '.png' ))
+    local newFrames = dozipfile( file_base_name .. '.lua.gz' )
+    local bitmapIndex = #self.bitmaps
+    for k, v in pairs( newFrames ) do
+        v.bitmapIndex = bitmapIndex
+        self.frames[k] = v
+    end
 end
 
 function Sprite:getFrame( name )
@@ -19,7 +30,8 @@ function Sprite:getFrame( name )
     if f then
         b = f.bitmap 
         if not b then
-            b = self.bitmap:getSubBitmap( f.x, f.y, f.w, f.h )
+            local atlas = self.bitmaps[f.bitmapIndex]
+            b = atlas:getSubBitmap( f.x, f.y, f.w, f.h )
             f.bitmap = b
         end
     end
