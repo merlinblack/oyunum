@@ -10,8 +10,12 @@ function Sprite:__init( file_base_name )
 end
 
 function Sprite:addFrames( file_base_name )
-    table.insert(self.bitmaps, Bitmap( file_base_name .. '.png' ))
     local newFrames = dozipfile( file_base_name .. '.lua.gz' )
+    if newFrames == nil then
+        print( 'Could not load frames from ' .. file_base_name .. '.lua.gz' )
+        return
+    end
+    table.insert(self.bitmaps, Bitmap( file_base_name .. '.png' ))
     local bitmapIndex = #self.bitmaps
     for k, v in pairs( newFrames ) do
         v.bitmapIndex = bitmapIndex
