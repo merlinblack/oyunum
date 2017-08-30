@@ -73,7 +73,13 @@ function packatlas:loadImages()
 end
 
 function packatlas:sortImages()
-    table.sort( self.bitmaps, function( a, b ) return a.h > b.h end )
+    function imageSort( a, b )
+        if a.h == b.h then
+            return a.name < b.name
+        end
+        return a.h > b.h
+    end
+    table.sort( self.bitmaps, imageSort )
 end
 
 function packatlas:placeImages()
