@@ -15,3 +15,11 @@ end
 function rungame()
     dofile 'scripts/magic_cliffs.lua'
 end
+
+function showgarbage()
+    local mt = { __gc = function(o) 
+        print( '+++ Garbage Collection +++' )
+        setmetatable( {}, getmetatable( o ) )
+    end }
+    setmetatable( {}, mt )
+end
