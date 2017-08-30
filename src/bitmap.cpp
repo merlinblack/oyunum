@@ -4,6 +4,7 @@
 Bitmap::~Bitmap()
 {
     al_destroy_bitmap( bitmap );
+    bitmap = nullptr;
 }
 
 void Bitmap::render()
@@ -70,6 +71,17 @@ void Bitmap::setBitmap( ALLEGRO_BITMAP* nb )
 
 void Bitmap::setBitmap( BitmapPtr& nb )
 {
-    bitmap = nb->bitmap;
+    // Copy but don't clone.
+    // I.e. get a new pointer nb's bitmap 
+    // that can be free'd with out causing
+    // nb to seg fault when destructing.
+    // We don't want to set nb's pointer to
+    // nullptr either.
+    al_destroy_bitmap( bitmap );
+    bitmap = al_create_sub_bitmap( nb->bitmap,
+           0, 0,
+           al_get_bitmap_width( nb->bitmap ),
+           al_get_bitmap_height( nb->bitmap )
+           );
 }
 
