@@ -1,6 +1,11 @@
 #include "bitmap.h"
 #include <string>
 
+Bitmap::~Bitmap()
+{
+    al_destroy_bitmap( bitmap );
+}
+
 void Bitmap::render()
 {
     if( bitmap != nullptr )

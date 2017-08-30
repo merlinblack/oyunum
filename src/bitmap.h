@@ -23,6 +23,8 @@ class Bitmap : public Renderable
     Bitmap( ALLEGRO_BITMAP* _bitmap, int _x = 0 , int _y = 0 ) : bitmap(_bitmap), x(_x), y(_y), scale(1.0f)
     {}
 
+    ~Bitmap();
+
     void render();
     void create( int w, int h );
     bool loadFromFile( const std::string& filename );
