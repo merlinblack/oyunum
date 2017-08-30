@@ -27,6 +27,7 @@ function packatlas:process()
     coroutine.yield()
 
     self.atlasIndex = 1
+    self.composite.name = self:getIndexedFilename()
 
     local allPlaced = false
 
@@ -40,11 +41,6 @@ function packatlas:process()
     
         coroutine.yield()
 
-        self:writeFrameTable()
-
-        coroutine.yield()
-
-        self:compressFrameTable()
 
         if #self.bitmaps == 0 then
             allPlaced = true
@@ -52,9 +48,15 @@ function packatlas:process()
             self.composite = Bitmap()
             self.composite:create( self.width, self.height )
             self.atlasIndex = self.atlasIndex + 1
-            self.placed = {}
+            self.composite.name = self:getIndexedFilename()
         end
     end
+
+    self:writeFrameTable()
+
+    coroutine.yield()
+
+    self:compressFrameTable()
 
     print( 'Completed packing atlas for ' .. self.filename  .. '.' )
 
@@ -109,6 +111,7 @@ function packatlas:fillcanvas( canvas )
 
             bitmap.x = canvas.x
             bitmap.y = canvas.y
+            bitmap.compositeName = self.composite.name
             table.insert( self.placed, bitmap )
 
             -- Horizontal
@@ -141,7 +144,7 @@ function packatlas:getIndexedFilename()
 end
 
 function packatlas:saveComposite()
-    local filename = self:getIndexedFilename()
+    local filename = self.composite.name
     filename = self.outputdir .. filename .. '.png'
 
     print( 'Saving composite image ' .. filename  )
@@ -151,7 +154,7 @@ function packatlas:saveComposite()
 end
    
 function packatlas:writeFrameTable()
-    local filename = self:getIndexedFilename()
+    local filename = self.filename
     filename = self.outputdir .. filename .. '.lua'
     local frameTable = io.open( filename, 'w+' )
     frameTable:write( 'return {\n' )
@@ -161,7 +164,8 @@ function packatlas:writeFrameTable()
         local desc = string.sub( name, 1, string.find( name, '.png' )-1 )
         print( 'Writing frame table entry for ' .. name )
         desc = desc:gsub( '-', '_')
-        desc = desc .. ' = { x = ' .. bitmap.x .. ', y = ' .. bitmap.y
+        desc = desc .. ' = { src = \'' .. bitmap.compositeName .. '\''
+        desc = desc .. ', x = ' .. bitmap.x .. ', y = ' .. bitmap.y
         desc = desc .. ', w = ' .. bitmap.sw .. ', h = ' .. bitmap.sh .. ' },'
         frameTable:write( desc .. '\n' )
     end
@@ -170,7 +174,7 @@ function packatlas:writeFrameTable()
 end
 
 function packatlas:compressFrameTable()
-    local filename = self:getIndexedFilename()
+    local filename = self.filename
     filename = self.outputdir .. filename .. '.lua'
 
     print( 'Gzipping ' .. filename )

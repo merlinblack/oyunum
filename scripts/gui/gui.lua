@@ -4,7 +4,7 @@ require 'sprite'
 class 'gui'
 
 gui.children = {}
-gui.atlas = Sprite 'data/sprites/gui'
+gui.atlas = Sprite( 'data/sprites', 'gui' )
 
 function gui:addChild( child )
     -- should check all the methods are present ...

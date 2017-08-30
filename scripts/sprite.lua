@@ -3,22 +3,21 @@ require 'dozipfile'
 
 class 'Sprite' 
 
-function Sprite:__init( file_base_name )
+function Sprite:__init( dir, name )
     self.bitmaps = {}
     self.frames = {}
-    self:addFrames( file_base_name )
+    self.dir = dir .. '/'
+    self:addFrames( dir, name )
 end
 
-function Sprite:addFrames( file_base_name )
-    local newFrames = dozipfile( file_base_name .. '.lua.gz' )
+function Sprite:addFrames( dir, name )
+    local filename = dir .. '/' .. name .. '.lua.gz'
+    local newFrames = dozipfile( filename )
     if newFrames == nil then
-        print( 'Could not load frames from ' .. file_base_name .. '.lua.gz' )
+        print( 'Could not load frames from ' .. filename .. '.lua.gz' )
         return
     end
-    table.insert(self.bitmaps, Bitmap( file_base_name .. '.png' ))
-    local bitmapIndex = #self.bitmaps
     for k, v in pairs( newFrames ) do
-        v.bitmapIndex = bitmapIndex
         self.frames[k] = v
     end
 end
@@ -34,7 +33,15 @@ function Sprite:getFrame( name )
     if f then
         b = f.bitmap 
         if not b then
-            local atlas = self.bitmaps[f.bitmapIndex]
+            local atlas = self.bitmaps[f.src]
+            if not atlas then
+                atlas = Bitmap( self.dir .. f.src .. '.png' )
+                if not atlas then
+                    print( 'Could not load image ' .. self.dir .. f.src .. '.png' )
+                    return nil
+                end
+                self.bitmaps[f.src] = atlas
+            end
             b = atlas:getSubBitmap( f.x, f.y, f.w, f.h )
             f.bitmap = b
         end
