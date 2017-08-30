@@ -59,7 +59,7 @@ tilegrids.front1 = getTileGrid( ts, 'Front 1' )
 tilegrids.front2 = getTileGrid( ts, 'Front 2' )
 tilegrids.back1 =  getTileGrid( ts, 'Back 1' )
 
-indy_sprite = Sprite( 'data/sprites/templerun' )
+indy_sprite = Sprite( 'data/sprites', 'templerun' )
 
 indy = Bitmap()
 indy.x = 150
