@@ -1,6 +1,8 @@
 #ifndef GAME_H
 #define GAME_H
 
+#include "config.h"
+
 #include <iostream>
 
 #include <allegro5/allegro.h>
@@ -25,12 +27,6 @@
 #include "lb_text.h"
 #include "lb_font.h"
 #include "lb_color.h"
-
-// 16:9
-//#define SCREEN_W    640 
-//#define SCREEN_H    360
-#define SCREEN_W    800 
-#define SCREEN_H    450
 
 #define LUA_GAME_INDEX  "game"
 

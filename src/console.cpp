@@ -1,3 +1,4 @@
+#include "config.h"
 #include "console.h"
 #include <allegro5/allegro_primitives.h>
 #include "LuaRef.h"
@@ -6,7 +7,8 @@
 #define CONSOLE_MAX_LINES 128
 #define CONSOLE_LINE_LENGTH 79
 #define CONSOLE_TAB_STOP 8
-#define CONSOLE_LINE_COUNT 15
+#define CONSOLE_TEXT_HEIGHT 16
+#define CONSOLE_LINE_COUNT (int)(SCREEN_H / CONSOLE_TEXT_HEIGHT * 0.75)
 #define CONSOLE_MAX_HISTORY 128
 #define LUA_CONSOLE_INDEX "console"
 
@@ -248,14 +250,14 @@ void Console::render()
     ALLEGRO_COLOR color = al_map_rgb( 255, 255, 255 );
     ALLEGRO_COLOR curcolor = al_map_rgb( 255, 50, 50 );
 
-    al_draw_filled_rectangle( 0, 0, width, CONSOLE_LINE_COUNT*16, al_map_rgba( 0, 0, 0, 200 ) );
+    al_draw_filled_rectangle( 0, 0, width, CONSOLE_LINE_COUNT*CONSOLE_TEXT_HEIGHT, al_map_rgba( 0, 0, 0, 200 ) );
 
     for( const auto& line : mLines )
     {
         if( line_no >= mStartLine && y < (CONSOLE_LINE_COUNT-1)*16 )
         {
             draw_colored_text( mFont->get(), color, 5, y, ALLEGRO_ALIGN_LEFT, line.c_str() );
-            y += 16;
+            y += CONSOLE_TEXT_HEIGHT;
         }
         line_no++;
     }
