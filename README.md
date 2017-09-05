@@ -1,5 +1,7 @@
 # Oyunum
 
+[![Software License](https://img.shields.io/badge/license-MIT-brightgreen.svg?style=flat-square)](LICENSE.md)
+
 My experimental game project with C++, Allegro, and Lua.
 
 This will be a 2d tite based jump and run, along the lines of Jill of the Jungle by Epic Megagames,
