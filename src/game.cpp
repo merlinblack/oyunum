@@ -27,7 +27,6 @@ bool Game::createDisplay()
     if( display == nullptr )
         return false;
     al_set_window_title( display, "My Game" );
-    al_set_new_bitmap_flags(ALLEGRO_MIN_LINEAR | ALLEGRO_MAG_LINEAR);
 
     resize();
 

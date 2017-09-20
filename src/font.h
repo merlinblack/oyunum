@@ -13,7 +13,10 @@ class Font
 
     Font( std::string filename, int size, int flags )
     {
+        int originalFlags = al_get_new_bitmap_flags();
+        al_set_new_bitmap_flags(ALLEGRO_MIN_LINEAR | ALLEGRO_MAG_LINEAR);
         mFont = al_load_font( filename.c_str(), size, flags );
+        al_set_new_bitmap_flags( originalFlags );
     }
 
     ~Font()
