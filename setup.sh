@@ -11,3 +11,4 @@ cmake ..
 
 make
 
+./kosh scripts/gensprites.lua
