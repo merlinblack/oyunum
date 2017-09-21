@@ -1,3 +1,4 @@
+require 'sprite'
 require 'packatlas'
 
 packatlas( 'data/sprites/gui', 'data/sprites', 'gui', 512, 512, 1, 5 ):process()
