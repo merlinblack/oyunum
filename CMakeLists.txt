@@ -73,4 +73,4 @@ set_property(TARGET kosh PROPERTY CXX_STANDARD_REQUIRED ON)
 add_custom_target(data-target ALL DEPENDS "${CMAKE_CURRENT_BINARY_DIR}/data" "${CMAKE_CURRENT_BINARY_DIR}/scripts")
 
 include(GitVersioning)
-enable_git_versioning(oyunum)
+enable_git_versioning(oyunum_common)
