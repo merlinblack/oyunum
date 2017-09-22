@@ -23,11 +23,6 @@ struct TileGridBinding : public Binding<TileGridBinding,TileGrid>
         return members;
     }
 
-    static bind_properties* properties()
-    {
-        return nullptr;
-    }
-
     static int create( lua_State* L )
     {
         TileSetPtr ts = TileSetBinding::fromStack( L, 1 );

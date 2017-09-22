@@ -10,16 +10,6 @@ struct RenderableBinding : public Binding<RenderableBinding,Renderable>
 {
     static constexpr const char* class_name = "Renderable";
 
-    static luaL_Reg* members()
-    {
-        return nullptr;
-    }
-
-    static bind_properties* properties()
-    {
-        return nullptr;
-    }
-
     static int create( lua_State* L )
     {
         return luaL_error( L, "Can not make an instance of an abstract class");
@@ -41,11 +31,6 @@ struct RenderListBinding : public Binding<RenderListBinding,RenderList>
             { nullptr, nullptr }
         };
         return members;
-    }
-
-    static bind_properties* properties()
-    {
-        return nullptr;
     }
 
     static int create( lua_State* L )

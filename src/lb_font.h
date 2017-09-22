@@ -11,16 +11,6 @@ struct FontBinding : public Binding<FontBinding,Font>
 {
     static constexpr const char* class_name = "Font";
 
-    static luaL_Reg* members()
-    {
-        return nullptr;
-    }
-
-    static bind_properties* properties()
-    {
-        return nullptr;
-    }
-
     static int create( lua_State* L )
     {
         const char* filename = luaL_checkstring( L, 1 );
