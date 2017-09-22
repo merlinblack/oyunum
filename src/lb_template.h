@@ -17,7 +17,6 @@ struct MyClassBinding : public Binding<MyClassBinding,MyClass>
             { nullptr, nullptr }
         };
         return members;
-        //return nullptr;
     }
 
     static bind_properties* properties()
@@ -26,7 +25,6 @@ struct MyClassBinding : public Binding<MyClassBinding,MyClass>
             { nullptr, nullptr, nullptr }
         };
         return properties;
-        //return nullptr;
     }
 
     static int create( lua_State* L )

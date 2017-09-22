@@ -22,11 +22,6 @@ struct TileSetBinding : public Binding<TileSetBinding,TileSet>
         return members;
     }
 
-    static bind_properties* properties()
-    {
-        return nullptr;
-    }
-
     static int create( lua_State* L )
     {
         int first = luaL_optinteger( L, 1, 1 );
