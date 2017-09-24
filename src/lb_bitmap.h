@@ -39,14 +39,24 @@ struct BitmapBinding : public Binding<BitmapBinding,Bitmap>
         return properties;
     }
 
+    static void setExtraMeta( lua_State* L )
+    {
+        lua_pushinteger( L, ALLEGRO_MIN_LINEAR );
+        lua_setfield( L, -2, "ALLEGRO_MIN_LINEAR" );
+        lua_pushinteger( L, ALLEGRO_MAG_LINEAR );
+        lua_setfield( L, -2, "ALLEGRO_MAG_LINEAR" );
+        return;
+    }
+
     static int create( lua_State* L )
     {
         BitmapPtr b = std::make_shared<Bitmap>();
 
         const char* filename = luaL_optstring( L, 1, nullptr );
+        int flags = luaL_optinteger( L, 2, 0 );
 
         if( filename != nullptr )
-            b->loadFromFile( filename );
+            b->loadFromFile( filename, flags );
 
         push( L, b );
 
@@ -58,8 +68,9 @@ struct BitmapBinding : public Binding<BitmapBinding,Bitmap>
         BitmapPtr b = fromStack( L, 1 );
         int w = luaL_checknumber( L, 2 );
         int h = luaL_checknumber( L, 3 );
+        int flags = luaL_optinteger( L, 4, 0 );
 
-        b->create( w, h );
+        b->create( w, h, flags );
 
         return 0;
     }
