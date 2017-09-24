@@ -18,13 +18,17 @@ void Bitmap::render()
 }
 
 // Creates a blank transparent bitmap.
-void Bitmap::create( int w, int h )
+void Bitmap::create( int w, int h, int flags )
 {
+    int old_flags = al_get_new_bitmap_flags();
+    al_set_new_bitmap_flags( old_flags | flags );
+
     bitmap = al_create_bitmap( w, h );
     ALLEGRO_BITMAP* prev = al_get_target_bitmap();
     al_set_target_bitmap( bitmap );
     al_clear_to_color( al_map_rgba( 0, 0, 0, 0 ) );
     al_set_target_bitmap( prev );
+    al_set_new_bitmap_flags( old_flags );
 }
 
 void Bitmap::blit( const BitmapPtr& other, float x, float y, float scale )
@@ -45,9 +49,15 @@ void Bitmap::blit( const BitmapPtr& other, float x, float y, float scale )
     al_set_target_bitmap( prev );
 }
 
-bool Bitmap::loadFromFile( const std::string& filename )
+bool Bitmap::loadFromFile( const std::string& filename, int flags )
 {
+    int old_flags = al_get_new_bitmap_flags();
+
+    al_set_new_bitmap_flags( old_flags | flags );
+
     bitmap = al_load_bitmap( filename.c_str() );
+
+    al_set_new_bitmap_flags( flags );
 
     return bitmap != nullptr;
 }

@@ -26,8 +26,8 @@ class Bitmap : public Renderable
     ~Bitmap();
 
     void render();
-    void create( int w, int h );
-    bool loadFromFile( const std::string& filename );
+    void create( int w, int h, int flags = 0 );
+    bool loadFromFile( const std::string& filename, int flags = 0 );
     bool saveToFile( const std::string& filename );
     BitmapPtr getSubBitmap( int _x, int _y, int _w, int _h );
     void setBitmap( ALLEGRO_BITMAP* nb );
