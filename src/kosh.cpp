@@ -39,8 +39,6 @@ int usage( char* argv[] )
 void initialiseAllegro()
 {
     al_init();
-    al_install_mouse();
-    al_install_keyboard();
     al_init_image_addon();
     al_init_font_addon();
     al_init_ttf_addon();
@@ -120,6 +118,8 @@ int main( int argc, char* argv[] )
         lua_close( L );
         return EXIT_FAILURE;
     }
+
+    cout << "Lua Mem " << lua_gc( L, LUA_GCCOUNT, 0 ) << "kb" << endl;
 
     lua_close( L );
     return EXIT_SUCCESS;
