@@ -32,7 +32,7 @@ using std::endl;
 
 int usage( char* argv[] )
 {
-    cout << "Usage: " << argv[0] << " file.lua" << endl;
+    cout << "Usage: " << argv[0] << "[-r code] file.lua [file.lua ...]" << endl;
     return EXIT_SUCCESS;
 }
 
@@ -87,17 +87,26 @@ lua_State* initialiseLua()
     lua_State* L = luaL_newstate();
     luaL_openlibs( L );
 
-    lua_getglobal( L, "coroutine" );
-    lua_pushcfunction( L, fake_yield );
-    lua_setfield( L, -2, "yield" );
-
     lua_register( L, "print", print );
 
     register_all_classes( L );
 
     luaL_dostring( L, "package.path = './scripts/?.lua;' .. package.path" );
+    luaL_dostring( L, "package.cpath = './scripts/?.so;' .. package.path" );
 
     return L;
+}
+
+// Run the chunk at the top of the stack.
+// If it yields - just call again.
+int runcode( lua_State* L )
+{
+    int ret;
+    while( (ret = lua_resume( L, nullptr, 0 ) ) == LUA_YIELD )
+    {
+        lua_settop( L, 0 );
+    }
+    return ret;
 }
 
 int main( int argc, char* argv[] )
@@ -105,18 +114,51 @@ int main( int argc, char* argv[] )
     cout << "Koş ay betiği" << endl;
     cout << "Version: " << GIT_REPO_VERSION_STR << endl;
     
-    if( argc != 2 )
+    if( argc < 2 )
         return usage( argv );
 
     initialiseAllegro();
     lua_State* L = initialiseLua();
 
-    if( luaL_dofile( L, argv[1] ) )
-    {
-        std::cerr << lua_tostring( L, -1 ) << std::endl;
+    int begin = 1;
 
-        lua_close( L );
-        return EXIT_FAILURE;
+    if( std::string(argv[1]) == "-r" )
+    {
+        begin = 3;
+        cout << "Executing code from command line." << std::endl;
+        if( luaL_loadstring( L, argv[2] ) != LUA_OK )
+        {
+            std::cerr << lua_tostring( L, -1 ) << std::endl;
+
+            lua_close( L );
+            return EXIT_FAILURE;
+        }
+        if( runcode( L ) != LUA_OK )
+        {
+            std::cerr << lua_tostring( L, -1 ) << std::endl;
+
+            lua_close( L );
+            return EXIT_FAILURE;
+        }
+    }
+
+    for( int i = begin; i < argc; i++ )
+    {
+        cout << "Executing Lua file: " << argv[i] << std::endl;
+        if( luaL_loadfile( L, argv[i] ) != LUA_OK )
+        {
+            std::cerr << lua_tostring( L, -1 ) << std::endl;
+
+            lua_close( L );
+            return EXIT_FAILURE;
+        }
+        if( runcode( L ) != LUA_OK )
+        {
+            std::cerr << lua_tostring( L, -1 ) << std::endl;
+
+            lua_close( L );
+            return EXIT_FAILURE;
+        }
     }
 
     cout << "Lua Mem " << lua_gc( L, LUA_GCCOUNT, 0 ) << "kb" << endl;
