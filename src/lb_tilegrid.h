@@ -27,9 +27,8 @@ struct TileGridBinding : public Binding<TileGridBinding,TileGrid>
     {
         TileSetPtr ts = TileSetBinding::fromStack( L, 1 );
         int w = luaL_checkinteger( L, 2 );
-        int h = luaL_checkinteger( L, 3 );
 
-        TileGridPtr tg = std::make_shared<TileGrid>( ts, w, h );
+        TileGridPtr tg = std::make_shared<TileGrid>( ts, w );
 
         push( L, tg );
 

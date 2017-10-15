@@ -12,7 +12,6 @@ class TileGrid : public Renderable
 {
     TileSetPtr tileSet;
     int width;
-    int height;
     int dx;
     int dy;
 
@@ -25,10 +24,9 @@ class TileGrid : public Renderable
 
     public:
 
-    TileGrid( TileSetPtr& ts, int w, int h ) 
+    TileGrid( TileSetPtr& ts, int w ) 
         : tileSet(ts)
         , width(w)
-        , height(h)
         , dx(0)
         , dy(0)
     {}

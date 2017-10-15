@@ -20,7 +20,7 @@ using CodePoints = std::vector<int32_t>;
 class EditString
 {
 public:
-    EditString(void) : mInsert(true), mPosition(mText.begin()), mCaret(0), mLocale_utf8( "" )
+    EditString(void) : mLocale_utf8( "" ), mInsert(true), mPosition(mText.begin()), mCaret(0)
     {}
 
     EditString( std::string newText )

@@ -197,7 +197,7 @@ void LuaInterpreter::reportStack( lua_State* thread )
     }
 }
 
-static const string dumpstack_str(lua_State* L )
+const string dumpstack_str(lua_State* L )
 {
     static stringstream ss;
     int i;
@@ -232,7 +232,7 @@ static const string dumpstack_str(lua_State* L )
     return ss.str();
 }
 
-static void dumpstack (lua_State *L, const char *message)
+void dumpstack (lua_State *L, const char *message)
 {
     printf("thread -- %p\n", L );
     printf("dumpstack -- %s\n",message);

@@ -18,8 +18,8 @@
 #define LI_PROMPT  "^lightgreen^Lua>^!^ "
 #define LI_PROMPT2 "^lightgreen^Lua>>^!^ "
 
-static const std::string dumpstack_str(lua_State* L );
-static void dumpstack (lua_State *L, const char *message);
+const std::string dumpstack_str(lua_State* L );
+void dumpstack (lua_State *L, const char *message);
 
 using CoroutineList = std::vector<int>;
 
