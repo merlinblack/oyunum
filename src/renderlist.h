@@ -39,7 +39,7 @@ class Renderable
     // For removing.
     inline bool operator== ( const Renderable& rhs ) const
     {
-        return *this == rhs;
+        return this == &rhs;
     }
 };
 
