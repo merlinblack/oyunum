@@ -22,6 +22,8 @@ include_directories(
     ${allegro_INCLUDE_DIRS}
     )
 
+link_directories( ${allegro_LIBRARY_DIRS} )
+
 # we don't want to copy if we're building in the source dir
 if (NOT CMAKE_CURRENT_SOURCE_DIR STREQUAL CMAKE_CURRENT_BINARY_DIR)
 
