@@ -10,6 +10,7 @@ cd luasocket
 
 mkdir -p results
 
+make LUAV=5.2 &&
 make LUAV=5.2 prefix=$(realpath results) install
 
 mkdir -vp $DESTDIR
