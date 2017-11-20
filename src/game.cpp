@@ -253,7 +253,8 @@ void Game::run()
                 }
                 else
                 {
-                    if( event.keyboard.keycode == ALLEGRO_KEY_TILDE )
+                    if( event.keyboard.keycode == ALLEGRO_KEY_TILDE 
+                     || event.keyboard.keycode == ALLEGRO_KEY_BACKQUOTE ) // Mac OS X
                     {
                         console->toggleVisibility();
                         continue;
