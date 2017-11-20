@@ -11,7 +11,7 @@ add_subdirectory(lua)
 find_package( allegro 5.0 COMPONENTS main image font color ttf primitives )
 
 file(GLOB SRCS src/*.cpp manualbind/src/*.cpp)
-file(GLOB exe_GAME src/boot.cpp)
+file(GLOB exe_GAME src/boot.cpp src/game.cpp)
 file(GLOB exe_KOSH src/kosh.cpp)
 list(REMOVE_ITEM SRCS ${exe_GAME} ${exe_KOSH})
 
