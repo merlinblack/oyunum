@@ -44,11 +44,6 @@ void initialiseAllegro()
     al_init_ttf_addon();
 }
 
-int fake_yield( lua_State* L )
-{
-    return 0;
-}
-
 int print( lua_State* L )
 {
     std::string output;
