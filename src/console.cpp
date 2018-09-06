@@ -17,7 +17,7 @@ using std::cout;
 using std::endl;
 
 Console::Console( lua_State* L, FontPtr font, int _width )
-        : mFont(font), mL(L), width(_width), visible(true), mStartLine(0), cursorBlink(0)
+        : mFont(font), mL(L), width(_width), visible(true), mStartLine(0), cursorBlinkTime(0), cursorBlink(0)
 {
     lua_pushlightuserdata( mL, this );
     lua_setfield( mL, LUA_REGISTRYINDEX, LUA_CONSOLE_INDEX );
