@@ -91,7 +91,8 @@ LuaInterpreter::State LuaInterpreter::insertLine( std::string line  )
     lua_xmove( mL, thread, 1 );
 
     // Run!
-    int ret = lua_resume( thread, mL, 0 );
+    int nResults;
+    int ret = lua_resume( thread, mL, 0, &nResults );
 
     switch( ret )
     {
@@ -125,6 +126,9 @@ LuaInterpreter::State LuaInterpreter::insertLine( std::string line  )
 
     reportStack( thread );
 
+    // Remove any yielded resutls.
+    lua_pop(thread, nResults);
+
     mPrompt = LI_PROMPT;
 
     return mState;
@@ -146,7 +150,8 @@ LuaInterpreter::State LuaInterpreter::resume()
         lua_State* thread = lua_tothread( mL, -1 );
         lua_pop( mL, 1 );
 
-        int ret = lua_resume( thread, mL, 0 );
+        int nResults;
+        int ret = lua_resume( thread, mL, 0, &nResults );
 
         switch( ret )
         {
@@ -170,6 +175,9 @@ LuaInterpreter::State LuaInterpreter::resume()
         }
 
         reportStack( thread );
+
+        // Remove any yielded resutls.
+        lua_pop(thread, nResults);
     }
 
     return mState;

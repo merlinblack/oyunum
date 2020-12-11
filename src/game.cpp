@@ -22,6 +22,7 @@ void Game::initialiseAllegro()
 
 bool Game::createDisplay()
 {
+    //al_set_new_display_option(ALLEGRO_VSYNC, 1, ALLEGRO_REQUIRE);
     al_set_new_display_flags( ALLEGRO_RESIZABLE );
     display = al_create_display( SCREEN_W, SCREEN_H );
     if( display == nullptr )
@@ -53,8 +54,9 @@ void Game::resize()
 
 void Game::registerEventSources()
 {
-    frameTimer = al_create_timer( 1.0 / 30.0 );  // 60 FPS
-    scriptTimer = al_create_timer( 1.0 / 100.0 ); // Update script called 100x per second
+    al_wait_for_vsync();
+    frameTimer = al_create_timer( 1.0 / 30.0 );  // 30 FPS
+    scriptTimer = al_create_timer( 1.0 / 90.0 ); // Update script called 90x per second (kept to a multiple of FPS)
     eventQueue = al_create_event_queue();
 
     al_register_event_source( eventQueue, al_get_keyboard_event_source() );
@@ -90,6 +92,7 @@ void Game::initialiseLua()
     info["width"] = SCREEN_W;
     info["height"] = SCREEN_H;
     info["gitver"] = GIT_REPO_VERSION_STR; 
+    info["luaver"] = LUA_VERSION;
     info.push();
     lua_setglobal( L, "info" );
 }
@@ -343,6 +346,7 @@ void Game::run()
 
             console->render();
 
+            al_wait_for_vsync();
             al_flip_display();
         }
     }
