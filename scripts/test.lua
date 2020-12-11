@@ -1,5 +1,5 @@
 print 'Lua Script'
-package.path = './scripts/?.lua;' .. package.path
+package.path = './scripts/?.lua;./scripts/zzlib/?.lua;' .. package.path
 require( 'events' )
 require( 'misc' )
 require( 'sprite' )

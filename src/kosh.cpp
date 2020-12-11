@@ -97,9 +97,10 @@ lua_State* initialiseLua()
 int runcode( lua_State* L )
 {
     int ret;
-    while( (ret = lua_resume( L, nullptr, 0 ) ) == LUA_YIELD )
+    int nResults;
+    while( (ret = lua_resume( L, nullptr, 0, &nResults ) ) == LUA_YIELD )
     {
-        lua_settop( L, 0 );
+        lua_pop( L, nResults );
     }
     return ret;
 }
