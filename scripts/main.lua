@@ -23,3 +23,11 @@ function showgarbage()
     end }
     setmetatable( {}, mt )
 end
+
+function sps( x )
+    setTimerDivider('sps',x);
+end
+
+function fps( x )
+    setTimerDivider('fps',x);
+end
